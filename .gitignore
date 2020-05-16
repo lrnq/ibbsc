@@ -1,0 +1,6 @@
+./data/data_*
+./data/smallnet_*
+./data/tanh_*
+
+./.ipynb_chechkpoints
+./figures
