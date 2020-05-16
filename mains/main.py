@@ -19,7 +19,6 @@ import os
 
 
 def main_func(activation, data_path, save_path, batch_size, epochs, layer_sizes, mi_methods, num_bins=30, num_runs=1, try_gpu=False):
-    ext = ""
     if os.path.isdir(save_path):
         resp = input("The folder to save data in already exist. Type \"yes\" to continue")
         if resp == "yes":
@@ -43,6 +42,7 @@ def main_func(activation, data_path, save_path, batch_size, epochs, layer_sizes,
         torch.manual_seed(i)
         np.random.seed(i)
         X_train, X_test, y_train, y_test = data_utils.load_data(data_path, 819)
+        print(X_train.shape)
 
         # Prepare data for pytorch
         if batch_size != "full":
@@ -63,7 +63,7 @@ def main_func(activation, data_path, save_path, batch_size, epochs, layer_sizes,
         optimizer = optim.Adam(model.parameters(), lr=0.0004)
         tr = Trainer(loss_function, epochs, model, optimizer, device)
         tr.train(train_loader, test_loader, act_loaders)
-        with open(save_path + '/training_history_run_{}_{}.pickle'.format(i, ext), 'wb') as f:
+        with open(save_path + '/training_history_run_{}_{}.pickle'.format(i, batch_size), 'wb') as f:
             pickle.dump([tr.error_train, tr.error_test], f, protocol=pickle.HIGHEST_PROTOCOL)
             f.close()
 
@@ -73,7 +73,7 @@ def main_func(activation, data_path, save_path, batch_size, epochs, layer_sizes,
             num_bins = int(max_value*15)
             mutual_inf = MI(tr.hidden_activations, act_full_loader,act=activation, num_of_bins=num_bins)
             MI_XH, MI_YH = mutual_inf.get_MI(method="fixed")
-            with open(save_path + '/MI_XH_MI_YH_run_{}_{}_{}_{}variable.pickle'.format(i, ext, batch_size, num_bins), 'wb') as f:
+            with open(save_path + '/MI_XH_MI_YH_run_{}_{}_{}variable.pickle'.format(i, batch_size, num_bins), 'wb') as f:
                 pickle.dump([MI_XH, MI_YH], f, protocol=pickle.HIGHEST_PROTOCOL)
                 f.close()
 
@@ -82,23 +82,23 @@ def main_func(activation, data_path, save_path, batch_size, epochs, layer_sizes,
             mutual_inf = MI(tr.hidden_activations, act_full_loader,act=activation, num_of_bins=num_bins)
             MI_XH, MI_YH = mutual_inf.get_MI(method="fixed")
 
-            with open(save_path + '/MI_XH_MI_YH_run_{}_{}_{}_{}bins.pickle'.format(i, ext, batch_size, num_bins), 'wb') as f:
-                pickle.dump([MI_XH2, MI_YH2], f, protocol=pickle.HIGHEST_PROTOCOL)
+            with open(save_path + '/MI_XH_MI_YH_run_{}_{}_{}bins.pickle'.format(i, batch_size, num_bins), 'wb') as f:
+                pickle.dump([MI_XH, MI_YH], f, protocol=pickle.HIGHEST_PROTOCOL)
                 f.close()
         
         if "adaptive" in mi_methods:
             mutual_inf = MI(tr.hidden_activations, act_full_loader,act=activation, num_of_bins=num_bins)
             MI_XH, MI_YH = mutual_inf.get_MI(method="adaptive")
 
-            with open(save_path + '/MI_XH_MI_YH_run_{}_{}_{}_{}adaptive.pickle'.format(i, ext, batch_size, num_bins), 'wb') as f:
-                pickle.dump([MI_XH2, MI_YH2], f, protocol=pickle.HIGHEST_PROTOCOL)
+            with open(save_path + '/MI_XH_MI_YH_run_{}_{}_{}adaptive.pickle'.format(i, batch_size, num_bins), 'wb') as f:
+                pickle.dump([MI_XH, MI_YH], f, protocol=pickle.HIGHEST_PROTOCOL)
                 f.close()
 
 
-        max_values.append(mutual_inf.max_val)
-        print(max_values)
+        #max_values.append(mutual_inf.max_val)
+        #print(max_values)
 
-        del ib_model
+        del model
         del tr
         del mutual_inf
         del train_loader

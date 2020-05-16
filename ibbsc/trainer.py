@@ -44,11 +44,16 @@ class Trainer:
         v_loss = 0
         acc = 0
         with torch.no_grad(): # Speeds up very little by turning autograd engine off.
-            for data, label in loader:
-                data, label= data.to(self.device), label.long().to(self.device)
+            if val:
+                for data, label in loader:
+                    data, label= data.to(self.device), label.long().to(self.device)
+                    yhat, yhat_softmax, activations = self.model(data)
+                    v_loss += self.loss_function(yhat, label).item()
+                    acc += self._get_number_correct(yhat_softmax, label).item()
+            else:
+                data, label = loader.dataset.tensors[0].to(self.device), loader.dataset.tensors[1].long().to(self.device)
                 yhat, yhat_softmax, activations = self.model(data)
                 v_loss += self.loss_function(yhat, label).item()
-                acc += self._get_number_correct(yhat_softmax, label).item()
                 
         v_loss = v_loss / len(loader.dataset)
         if val:

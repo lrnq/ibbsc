@@ -1,6 +1,7 @@
-./data/data_*
-./data/smallnet_*
-./data/tanh_*
+data/*
+!data/var_u.mat
+mains/*
+!mains/main.py
+.ipynb_chechkpoints/*
+figures/*
 
-./.ipynb_chechkpoints
-./figures

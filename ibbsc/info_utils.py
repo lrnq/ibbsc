@@ -27,10 +27,10 @@ def get_max_val_all_layers(activations):
 
 
 
-def get_bins_layers(activations, num_bins, act="relu"):
+def get_bins_layers(activations, num_bins, act):
     max_vals = get_max_val_all_layers(activations)
     bins = []
-    if act == "tanh":
+    if act == "tanh" or act == "elu":
         low = -1
     else:
         low = 0
@@ -38,7 +38,7 @@ def get_bins_layers(activations, num_bins, act="relu"):
         epoch_bins=[]
         for layer in epoch:
             layer_bins=[low]
-            unique_act_vals=np.unique(np.squeeze(layer.reshape(1,-1)))
+            unique_act_vals=np.unique(layer.flatten())
             sorted_ua = np.sort(np.setdiff1d(unique_act_vals,layer_bins)) # sorted unique activations not in layer_bins
             if sorted_ua.size>0:
                 for k in range(num_bins):

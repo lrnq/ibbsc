@@ -1,10 +1,12 @@
+import sys
+sys.path.insert(0,'../ibbsc')
 import numpy as np
 import pickle
 import plot_utils
 
-RANGE = 20
-ext = "2568000[12, 10, 7, 5, 4, 3, 2]tanh2"
-data_path = "data_tanh_adapt/"
+RANGE = 10
+ext = "256_10adaptive"
+data_path = "../data/tanh_adaptive_10/"
 # Read in all MI data from different runs
 #dims = 
 full_MI_XH = np.zeros(RANGE,  dtype=object)

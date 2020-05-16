@@ -57,7 +57,7 @@ def plot_info_plan(MI_XH, MI_YH, cbar_epochs="8000", dataset="", save_plot=True,
         ax.plot(MI_XH[j, :], MI_YH[j, :], alpha=0.01, zorder=1)
 
     #ax.set_title('Information Plane - {}'.format(dataset))
-    ax.set_xticks(range(13)) # Hard coded for IB dataset 
+    #ax.set_xticks(range(13)) # Hard coded for IB dataset 
     ax.set_xlabel('I(X;H)')
     ax.set_ylabel('I(H;Y)')
     cbar = fig.colorbar(mapcs, ticks=[])
