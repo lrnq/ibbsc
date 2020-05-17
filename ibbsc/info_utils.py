@@ -43,7 +43,7 @@ def get_bins_layers(activations, num_bins, act):
             # Find all unique values in the layer over all samples
             unique_act_vals=np.unique(layer.flatten()) 
             # Get values that is not the min value
-            sorted_ua = np.sort(np.setdiff1d(unique_act_vals,layer_bins)) # sorted unique activations not in layer_bins
+            sorted_ua = np.array(sorted(list(set(unique_act_vals) - set(layer_bins))))
             if len(sorted_ua)>0: 
                 last_idx = np.floor((((num_bins-1)*(len(sorted_ua))) / num_bins))
                 inds = list(map(int, np.linspace(0, last_idx, num_bins)))
