@@ -49,7 +49,7 @@ class MI:
         if method == "fixed":
             bins = np.linspace(self.min_val, self.max_val, self.num_of_bins)
         elif method == "adaptive":
-            max_vals, adapt_bins = info_utils.get_bins_layers(self.activity, self.num_of_bins, self.act)
+            adapt_bins = info_utils.get_bins_layers(self.activity, self.num_of_bins, self.act)
         else:
             raise("Method not supported. Pick fixed or adaptive")
 

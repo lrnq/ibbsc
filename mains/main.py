@@ -115,4 +115,4 @@ def main_func(activation, data_path, save_path, batch_size, epochs, layer_sizes,
 
 if __name__ == "__main__":
     ib_data_path = "../data/var_u.mat"
-    main_func("tanh", ib_data_path, "../data/tanh_adaptive_10", 256, 8000, [12, 10, 7, 5, 4, 3, 2], ["adaptive"], num_bins=10, num_runs=40, try_gpu=False)
+    main_func("elu", ib_data_path, "../data/elu_adaptive_30", 256, 8000, [12, 10, 7, 5, 4, 3, 2], ["adaptive"], num_bins=30, num_runs=40, try_gpu=False)

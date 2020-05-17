@@ -17,34 +17,39 @@ def get_max_value(activity):
 
 
 def get_max_val_all_layers(activations):
-    max_vals = []
+    max_vals = [] # shape of (num_epochs, num_layers)
     for epoch in activations:
         max_epoch = []
-        for layer in epoch:
-            max_epoch.append(layer.max())
+        # after 1 epoch the whole dataset is sent through the model
+        # here we loop over each layer for the pass through after an epoch.
+        for layer in epoch: 
+            # append max value for that layer. to max_epoch that is of length num_layers
+            max_epoch.append(layer.max()) 
         max_vals.append(max_epoch)
     return max_vals
 
 
 
 def get_bins_layers(activations, num_bins, act):
-    max_vals = get_max_val_all_layers(activations)
     bins = []
-    if act == "tanh" or act == "elu":
-        low = -1
-    else:
-        low = 0
     for epoch in activations:
         epoch_bins=[]
         for layer in epoch:
-            layer_bins=[low]
-            unique_act_vals=np.unique(layer.flatten())
+            if act in ["tanh", "elu"]:
+                layer_bins=[-1-1e-11] # min value possible
+            else:
+                layer_bins=[0] # min value possible 
+            # layer.flatten() is of shape (num_samples, size_layer)
+            # Find all unique values in the layer over all samples
+            unique_act_vals=np.unique(layer.flatten()) 
+            # Get values that is not the min value
             sorted_ua = np.sort(np.setdiff1d(unique_act_vals,layer_bins)) # sorted unique activations not in layer_bins
-            if sorted_ua.size>0:
-                for k in range(num_bins):
-                    ind=int(k*(sorted_ua.size/num_bins))
-                    layer_bins.append(sorted_ua[ind])
+            if len(sorted_ua)>0: 
+                last_idx = np.floor((((num_bins-1)*(len(sorted_ua))) / num_bins))
+                inds = list(map(int, np.linspace(0, last_idx, num_bins)))
+                borders = list(map(lambda x: sorted_ua[x], inds))
+                layer_bins.extend(borders)
                 layer_bins.append(sorted_ua[-1])
-            epoch_bins.append(np.asarray(layer_bins))
+            epoch_bins.append(np.array(layer_bins))
         bins.append(epoch_bins)    
-    return max_vals, np.array(bins)
+    return np.array(bins)
