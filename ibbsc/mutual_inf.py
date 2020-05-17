@@ -28,6 +28,8 @@ class MI:
 
 
     def entropy(self, bins, activations):
+        print(activations.shape)
+        print(bins.shape)
         binned = np.digitize(activations, bins)
         _, unique_layers = np.unique(binned, axis=0, return_counts=True)
         prob_hidden_layers = unique_layers / sum(unique_layers)
@@ -35,11 +37,9 @@ class MI:
 
     
     def mi_binning(self, labelixs, activations_layer, bins):
-        entropy_layer = self.entropy(bins, activations_layer)
-        entropy_layer_output = 0
-        for label, ixs in labelixs.items():
-            h = self.entropy(bins, activations_layer[ixs,:])
-            entropy_layer_output += ixs.mean() * h
+        entropy_layer = self.entropy(bins, activations_layer) # H(X). Note that H(X|h) = 0 so I(X;h) = H(X)
+        # below is \sum_y Pr[Y=y] * H(h|Y=y)
+        entropy_layer_output = sum([self.entropy(bins, activations_layer[inds]) * inds.mean() for inds in labelixs.values()])
         return entropy_layer, (entropy_layer - entropy_layer_output)
 
     

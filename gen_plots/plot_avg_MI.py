@@ -4,9 +4,9 @@ import numpy as np
 import pickle
 import plot_utils
 
-RANGE = 1
-ext = "256_30adaptive"
-data_path = "../data/tanh_adaptive_30_0001/"
+RANGE = 7
+ext = "full_30adaptive"
+data_path = "../data/tanh_adaptive_30_/"
 # Read in all MI data from different runs
 #dims = 
 full_MI_XH = np.zeros(RANGE,  dtype=object)
