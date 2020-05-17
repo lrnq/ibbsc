@@ -24,14 +24,10 @@ def load_data(data_path, test_size):
     #classes = len(np.unique(y))
     #y_onehot = np.eye(classes)[y]
     
-    # We use a simple method from sklearn.
-    # Original paper uses a custom method, 
-    # but it shouldnt matter as long
-    # as we shuffle and divide. 
     #test_size=819, # same os orig paper
     #random_state=1, # not used 
     X_train, X_test, y_train, y_test = train_test_split(X, y,
-                                                        test_size=test_size, # same os orig paper
+                                                        test_size=test_size, 
                                                         shuffle=True,
                                                         stratify=y)
     return X_train, X_test, y_train, y_test
