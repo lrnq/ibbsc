@@ -35,7 +35,7 @@ class MI:
 
     
     def mi_binning(self, labelixs, activations_layer, bins):
-        # H(X). Note that H(X|h) = 0 so I(X;h) = H(X)
+        # H(h). Note that H(h|X) = 0 so I(X;h) = H(h)
         entropy_layer = self.entropy(bins, activations_layer)
         # below is \sum_y Pr[Y=y] * H(h|Y=y)
         entropy_layer_output = sum([self.entropy(bins, activations_layer[inds]) * inds.mean() for inds in labelixs.values()])
