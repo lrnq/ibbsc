@@ -1,9 +1,7 @@
 import numpy as np
 import torch 
-from torch import nn
-from torch.nn import functional as F
 from scipy import io
-from torch.utils.data import DataLoader, random_split, TensorDataset
+from torch.utils.data import DataLoader, TensorDataset
 from sklearn.model_selection import train_test_split
 
 def de_onehot(y_onehot):
