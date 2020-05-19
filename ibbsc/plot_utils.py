@@ -58,8 +58,8 @@ def plot_info_plan(MI_XH, MI_YH, cbar_epochs="8000", dataset="", save_plot=True,
 
     #ax.set_title('Information Plane - {}'.format(dataset))
     #ax.set_xticks(range(13)) # Hard coded for IB dataset 
-    ax.set_xlabel('I(X;H)')
-    ax.set_ylabel('I(H;Y)')
+    ax.set_xlabel('I(X;T)')
+    ax.set_ylabel('I(T;Y)')
     cbar = fig.colorbar(mapcs, ticks=[])
     cbar.set_label("Epochs")
     #source: https://stackoverflow.com/questions/28808143/putting-tick-values-on-top-and-bottom-of-matplotlib-colorbar
@@ -94,8 +94,8 @@ def plot_average_MI(num_runs, ext, data_path, save_plot, save_path, version=""):
 
 
     plot_info_plan(avg_MI_XH[:], avg_MI_YH[:], save_plot=save_plot, save_path=save_path)
-    plot_layer_MI(avg_MI_XH[:], "I(X;H)",  save_plot=save_plot, save_path=save_path+"XH")
-    plot_layer_MI(avg_MI_YH[:], "I(Y;H)",  save_plot=save_plot, save_path=save_path + "YH")
+    plot_layer_MI(avg_MI_XH[:], "I(X;T)",  save_plot=save_plot, save_path=save_path+"XH")
+    plot_layer_MI(avg_MI_YH[:], "I(Y;T)",  save_plot=save_plot, save_path=save_path + "YH")
 
     return
 

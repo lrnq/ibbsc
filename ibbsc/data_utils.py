@@ -13,7 +13,7 @@ def de_onehot(y_onehot):
     return np.array(out_arr)
 
 
-def load_data(data_path, test_size):
+def load_data(data_path, test_size, seed):
     # Load data as is
     data = io.loadmat(data_path) # OBS loads in a weird JSON
     X = data["F"] # (4096, 12)
@@ -32,16 +32,18 @@ def load_data(data_path, test_size):
     #random_state=1, # not used 
     X_train, X_test, y_train, y_test = train_test_split(X, y,
                                                         test_size=test_size, # same os orig paper
+                                                        random_state=seed,
                                                         shuffle=True,
                                                         stratify=y)
     return X_train, X_test, y_train, y_test
 
 
-def create_dataloader(X, y, batch_size):
+def create_dataloader(X, y, batch_size, seed, shuffle=True):
     """
     Expects numpy arrays with data 
     like what is returned by the load_data() 
     function. 
     """
+    torch.manual_seed(seed)
     td = TensorDataset(torch.Tensor(X), torch.Tensor(y))
-    return DataLoader(td, batch_size=batch_size, shuffle=True) 
+    return DataLoader(td, batch_size=batch_size, shuffle=shuffle)

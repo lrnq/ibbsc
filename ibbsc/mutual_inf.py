@@ -9,9 +9,15 @@ class MI:
         self.num_of_bins = num_of_bins
         self.act=act
         
-        if act == "tanh" or act == "elu":
+        if act == "tanh":
             self.min_val = -1
             self.max_val = 1
+        elif act == "elu":
+            self.min_val = -1
+            self.max_val = info_utils.get_max_value(activity)
+        elif act == "6relu":
+            self.min_val = 0
+            self.max_val = 6
         else:
             self.min_val = 0
             self.max_val = info_utils.get_max_value(activity)
@@ -38,7 +44,7 @@ class MI:
         # H(h). Note that H(h|X) = 0 so I(X;h) = H(h)
         entropy_layer = self.entropy(bins, activations_layer)
         # below is \sum_y Pr[Y=y] * H(h|Y=y)
-        entropy_layer_output = sum([self.entropy(bins, activations_layer[inds]) * inds.mean() for inds in labelixs.values()])
+        entropy_layer_output = sum([self.entropy(bins, activations_layer[inds,:]) * inds.mean() for inds in labelixs.values()])
         return entropy_layer, (entropy_layer - entropy_layer_output)
 
     
@@ -47,6 +53,7 @@ class MI:
         all_MI_YH = [] # Contains I(Y;H) and stores it as (epoch_num, layer_num
         if method == "fixed":
             bins = np.linspace(self.min_val, self.max_val, self.num_of_bins)
+            print(self.min_val, self.max_val, self.num_of_bins)
         elif method == "adaptive":
             adapt_bins = info_utils.get_bins_layers(self.activity, self.num_of_bins, self.act)
         else:

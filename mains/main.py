@@ -41,20 +41,20 @@ def main_func(activation, data_path, save_path, batch_size, epochs, layer_sizes,
     for i in tqdm.tqdm(range(num_runs)): 
         torch.manual_seed(i)
         np.random.seed(i)
-        X_train, X_test, y_train, y_test = data_utils.load_data(data_path, 819)
+        X_train, X_test, y_train, y_test = data_utils.load_data(data_path, 819, i)
         print(X_train.shape)
 
         # Prepare data for pytorch
         if batch_size != "full":
-            train_loader = data_utils.create_dataloader(X_train, y_train, batch_size)
-            test_loader = data_utils.create_dataloader(X_test, y_test, batch_size)
+            train_loader = data_utils.create_dataloader(X_train, y_train, batch_size, i)
+            test_loader = data_utils.create_dataloader(X_test, y_test, batch_size, i)
         else:
-            train_loader = data_utils.create_dataloader(X_train, y_train, len(X_train))
-            test_loader = data_utils.create_dataloader(X_test, y_test, len(X_test))
+            train_loader = data_utils.create_dataloader(X_train, y_train, len(X_train), i)
+            test_loader = data_utils.create_dataloader(X_test, y_test, len(X_test), i)
 
         # Activitiy loaders
         full_X, full_y = np.concatenate((X_train, X_test)), np.concatenate((y_train, y_test))
-        act_full_loader = data_utils.create_dataloader(full_X, full_y, len(full_X))
+        act_full_loader = data_utils.create_dataloader(full_X, full_y, len(full_X), i, shuffle=False)
         #act_train_loader = data_utils.create_dataloader(X_train, y_train, len(X_train))
         #act_test_loader = data_utils.create_dataloader(X_test, y_test, len(X_test))
         act_loaders = [act_full_loader]
@@ -68,31 +68,32 @@ def main_func(activation, data_path, save_path, batch_size, epochs, layer_sizes,
             f.close()
 
 
-        if "variable" in mi_methods:
-            max_value = info_utils.get_max_value(tr.hidden_activations)
-            num_bins = int(max_value*15)
-            mutual_inf = MI(tr.hidden_activations, act_full_loader,act=activation, num_of_bins=num_bins)
-            MI_XH, MI_YH = mutual_inf.get_MI(method="fixed")
-            with open(save_path + '/MI_XH_MI_YH_run_{}_{}_{}variable.pickle'.format(i, batch_size, num_bins), 'wb') as f:
-                pickle.dump([MI_XH, MI_YH], f, protocol=pickle.HIGHEST_PROTOCOL)
-                f.close()
+        for j in num_bins:
+            if "variable" in mi_methods:
+                max_value = info_utils.get_max_value(tr.hidden_activations)
+                num_bins = int(max_value*15)
+                mutual_inf = MI(tr.hidden_activations, act_full_loader,act=activation, num_of_bins=j)
+                MI_XH, MI_YH = mutual_inf.get_MI(method="fixed")
+                with open(save_path + '/MI_XH_MI_YH_run_{}_{}_{}variable.pickle'.format(i, batch_size, j), 'wb') as f:
+                    pickle.dump([MI_XH, MI_YH], f, protocol=pickle.HIGHEST_PROTOCOL)
+                    f.close()
 
 
-        if "fixed" in mi_methods:
-            mutual_inf = MI(tr.hidden_activations, act_full_loader,act=activation, num_of_bins=num_bins)
-            MI_XH, MI_YH = mutual_inf.get_MI(method="fixed")
+            if "fixed" in mi_methods:
+                mutual_inf = MI(tr.hidden_activations, act_full_loader,act=activation, num_of_bins=j)
+                MI_XH, MI_YH = mutual_inf.get_MI(method="fixed")
 
-            with open(save_path + '/MI_XH_MI_YH_run_{}_{}_{}bins.pickle'.format(i, batch_size, num_bins), 'wb') as f:
-                pickle.dump([MI_XH, MI_YH], f, protocol=pickle.HIGHEST_PROTOCOL)
-                f.close()
-        
-        if "adaptive" in mi_methods:
-            mutual_inf = MI(tr.hidden_activations, act_full_loader,act=activation, num_of_bins=num_bins)
-            MI_XH, MI_YH = mutual_inf.get_MI(method="adaptive")
+                with open(save_path + '/MI_XH_MI_YH_run_{}_{}_{}bins.pickle'.format(i, batch_size, j), 'wb') as f:
+                    pickle.dump([MI_XH, MI_YH], f, protocol=pickle.HIGHEST_PROTOCOL)
+                    f.close()
+            
+            if "adaptive" in mi_methods:
+                mutual_inf = MI(tr.hidden_activations, act_full_loader,act=activation, num_of_bins=j)
+                MI_XH, MI_YH = mutual_inf.get_MI(method="adaptive")
 
-            with open(save_path + '/MI_XH_MI_YH_run_{}_{}_{}adaptive.pickle'.format(i, batch_size, num_bins), 'wb') as f:
-                pickle.dump([MI_XH, MI_YH], f, protocol=pickle.HIGHEST_PROTOCOL)
-                f.close()
+                with open(save_path + '/MI_XH_MI_YH_run_{}_{}_{}adaptive.pickle'.format(i, batch_size, j), 'wb') as f:
+                    pickle.dump([MI_XH, MI_YH], f, protocol=pickle.HIGHEST_PROTOCOL)
+                    f.close()
 
 
         #max_values.append(mutual_inf.max_val)
@@ -115,4 +116,4 @@ def main_func(activation, data_path, save_path, batch_size, epochs, layer_sizes,
 
 if __name__ == "__main__":
     ib_data_path = "../data/var_u.mat"
-    main_func("tanh", ib_data_path, "../data/tanh_adaptive_30_", 256, 8000, [12, 10, 7, 5, 4, 3, 2], ["adaptive"], num_bins=30, num_runs=40, try_gpu=False)
+    main_func("relu", ib_data_path, "../data/relu_fixed_", 256, 8000, [12, 10, 7, 5, 4, 3, 2], ["fixed"], num_bins=[30,100], num_runs=40, try_gpu=False)

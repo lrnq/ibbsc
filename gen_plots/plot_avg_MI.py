@@ -4,9 +4,9 @@ import numpy as np
 import pickle
 import plot_utils
 
-RANGE = 7
-ext = "full_30adaptive"
-data_path = "../data/tanh_adaptive_30_/"
+RANGE = 8
+ext = "256_100bins"
+data_path = "../data/relu_fixed_/"
 # Read in all MI data from different runs
 #dims = 
 full_MI_XH = np.zeros(RANGE,  dtype=object)
@@ -21,6 +21,6 @@ avg_MI_XH = np.mean(full_MI_XH, axis = 0)
 avg_MI_YH = np.mean(full_MI_YH, axis = 0)
 
 
-plot_utils.plot_layer_MI(avg_MI_XH[:], "I(X;H)")
-plot_utils.plot_layer_MI(avg_MI_YH[:], "I(Y;H)")
+plot_utils.plot_layer_MI(avg_MI_XH[:], "I(X;T)")
+plot_utils.plot_layer_MI(avg_MI_YH[:], "I(Y;T)")
 plot_utils.plot_info_plan(avg_MI_XH[:], avg_MI_YH[:])
