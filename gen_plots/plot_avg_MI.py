@@ -4,8 +4,8 @@ import numpy as np
 import pickle
 import plot_utils
 
-RANGE = 8
-ext = "256_100bins"
+RANGE = 40
+ext = "full_100bins"
 data_path = "../data/relu_fixed_/"
 # Read in all MI data from different runs
 #dims = 

@@ -116,4 +116,4 @@ def main_func(activation, data_path, save_path, batch_size, epochs, layer_sizes,
 
 if __name__ == "__main__":
     ib_data_path = "../data/var_u.mat"
-    main_func("relu", ib_data_path, "../data/relu_fixed_", 256, 8000, [12, 10, 7, 5, 4, 3, 2], ["fixed"], num_bins=[30,100], num_runs=40, try_gpu=False)
+    main_func("relu", ib_data_path, "../data/relu_adaptive_30", 256, 8000, [12, 10, 7, 5, 4, 3, 2], ["adaptive"], num_bins=[30,100], num_runs=40, try_gpu=False)

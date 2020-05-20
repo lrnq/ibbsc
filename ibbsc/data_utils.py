@@ -25,12 +25,8 @@ def load_data(data_path, test_size, seed):
     #test_size=819, # same os orig paper
     #random_state=1, # not used 
     X_train, X_test, y_train, y_test = train_test_split(X, y,
-<<<<<<< HEAD
-                                                        test_size=test_size, # same os orig paper
                                                         random_state=seed,
-=======
                                                         test_size=test_size, 
->>>>>>> 1206a58093d956284b3f6e31d7c463d6e3539929
                                                         shuffle=True,
                                                         stratify=y)
     return X_train, X_test, y_train, y_test
@@ -44,8 +40,4 @@ def create_dataloader(X, y, batch_size, seed, shuffle=True):
     """
     torch.manual_seed(seed)
     td = TensorDataset(torch.Tensor(X), torch.Tensor(y))
-<<<<<<< HEAD
     return DataLoader(td, batch_size=batch_size, shuffle=shuffle)
-=======
-    return DataLoader(td, batch_size=batch_size, shuffle=True) 
->>>>>>> 1206a58093d956284b3f6e31d7c463d6e3539929

@@ -113,6 +113,11 @@ def plot_max_vals(max_vals, save_path):
     return 
 
 
+def plot_binning_methods(activation_function, bin_boundaries):
+    pass
+
+
+
 
 def plot_subset_runs_info(runs, ext, save_path, data_path, save_plot=True):
     full_MI_XH = np.zeros(len(runs),  dtype=object)

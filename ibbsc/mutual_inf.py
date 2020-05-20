@@ -1,4 +1,5 @@
 import numpy as np
+import pickle
 import info_utils
 import tqdm
 
@@ -32,11 +33,19 @@ class MI:
         for i in self.y_idx_label:
             self.y_idx_label[i] = i == self.y_flat
 
+        #patterns, inv, cnts = np.unique(self.X, axis=0, return_inverse=True, return_counts=True)
+        #self.x_idx_patterns = {x : None for x in range(len(patterns))}
+        #for i in range(len(patterns)):
+        #    self.x_idx_patterns[i] = i == inv
+
+
 
     def entropy(self, bins, activations):
         binned = np.digitize(activations, bins)
         _, unique_layers = np.unique(binned, axis=0, return_counts=True)
         prob_hidden_layers = unique_layers / sum(unique_layers)
+        #print(unique_layers)
+        #print(prob_hidden_layers)
         return -np.sum(prob_hidden_layers * np.log2(prob_hidden_layers))
 
     
@@ -45,6 +54,9 @@ class MI:
         entropy_layer = self.entropy(bins, activations_layer)
         # below is \sum_y Pr[Y=y] * H(h|Y=y)
         entropy_layer_output = sum([self.entropy(bins, activations_layer[inds,:]) * inds.mean() for inds in labelixs.values()])
+        # below is \sum_y Pr[X=x] * H(h|X=x)
+        #entropy_layer_input = sum([self.entropy(bins, activations_layer[inds,:]) * inds.mean() for inds in self.x_idx_patterns.values()])
+        #print(entropy_layer - entropy_layer_input, ", ", entropy_layer)
         return entropy_layer, (entropy_layer - entropy_layer_output)
 
     
@@ -56,6 +68,9 @@ class MI:
             print(self.min_val, self.max_val, self.num_of_bins)
         elif method == "adaptive":
             adapt_bins = info_utils.get_bins_layers(self.activity, self.num_of_bins, self.act)
+            #with open('bins.pickle', 'wb') as f:
+            #        pickle.dump(adapt_bins, f, protocol=pickle.HIGHEST_PROTOCOL)
+            #        f.close()
         else:
             raise("Method not supported. Pick fixed or adaptive")
 
