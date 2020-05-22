@@ -39,7 +39,6 @@ def main_func(activation, data_path, save_path, batch_size, epochs, layer_sizes,
 
 
     for i in tqdm.tqdm(range(num_runs)):
-        i = 9 
         torch.manual_seed(i)
         np.random.seed(i)
         X_train, X_test, y_train, y_test = data_utils.load_data(data_path, 819, i)
@@ -68,9 +67,9 @@ def main_func(activation, data_path, save_path, batch_size, epochs, layer_sizes,
             pickle.dump([tr.error_train, tr.error_test], f, protocol=pickle.HIGHEST_PROTOCOL)
             f.close()
 
-        with open(save_path + '/max_values{}_{}.pickle'.format(i, batch_size), 'wb') as f:
-            pickle.dump(tr.max_value_layers, f, protocol=pickle.HIGHEST_PROTOCOL)
-            f.close()
+        #with open(save_path + '/max_values{}_{}.pickle'.format(i, batch_size), 'wb') as f:
+        #    pickle.dump(tr.max_value_layers, f, protocol=pickle.HIGHEST_PROTOCOL)
+        #    f.close()
 
 
         for j in num_bins:
