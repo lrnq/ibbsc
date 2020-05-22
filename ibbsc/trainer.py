@@ -21,6 +21,7 @@ class Trainer:
         self.full_loss = []
         self.error_train = []
         self.error_test = []
+        self.max_value_layers = [] # should be of size (num_epochs, depth network)
         #self.weights = dict() #  Not currently in use, but if plot of grad of weights are needed we need this
         #self.ws_grads = dict() # Not currently in use, but if plot of grad of weights are needed we need this
         
@@ -35,6 +36,16 @@ class Trainer:
             if layer.bias != None: 
                 layer.bias.data.fill_(0.00)
 
+
+    def _get_max_val(self, activation_values):
+        """
+        Activation values are a list of size (num_samples, net_depth) 
+        """
+        cur_epoch_max = []
+        for layer in activation_values:
+            cur_epoch_max.append(layer.max())
+        self.max_value_layers.append(cur_epoch_max)
+        return
         
     def _get_epoch_activity(self, loader, epoch, val=False):
         """
@@ -77,6 +88,7 @@ class Trainer:
             v_loss, act = self._get_epoch_activity(loader, epoch)
             if counter == 0:
                 self.hidden_activations.append(act)
+                self._get_max_val(act)
             elif counter == 1:
                 self.hidden_activations_train.append(act)
             elif counter == 2:
@@ -88,13 +100,13 @@ class Trainer:
         """
         Returns number of correct predictions from the softmax output. 
         Requires target to be a flat vector i.e not one-hot encoded.
+        TODO: rewrite
         """
         n_corr = (target == output.argmax(dim=1)).sum()
         return n_corr 
     
     
     def train(self, train_loader, test_loader, act_loaders):
-        MI_tracker = 1
         self.model.apply(self._init_weights) #Init kernel weights
         #scheduler = optim.lr_scheduler.ReduceLROnPlateau(self.opt, 'min', verbose=True, patience=300)
         for epoch in range(1, self.epochs+1):
@@ -105,6 +117,7 @@ class Trainer:
             for train_data, label in train_loader: 
                 train_data, label  = train_data.to(self.device), label.long().to(self.device)
                 yhat, yhat_softmax, _ = self.model(train_data)
+                #print(yhat_softmax)
                 loss = self.loss_function(yhat, label)
                 acc_train += self._get_number_correct(yhat_softmax, label).item()
                 self.opt.zero_grad()
@@ -119,7 +132,8 @@ class Trainer:
             ### STOP MAIN TRAIN LOOP ###
         
             ### RUN ON VALIDATION DATA ###
-            val_loss = self._get_epoch_activity(test_loader, epoch, val=True)[0]
+            if epoch % 100 == 0:
+                val_loss = self._get_epoch_activity(test_loader, epoch, val=True)[0]
             #scheduler.step(val_loss) #Reduce LR on plateau.
             
             ### SAVE ACTIVATION ON FULL DATA ###

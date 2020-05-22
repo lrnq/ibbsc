@@ -33,7 +33,7 @@ def plot_layer_MI(MI, y_label, subplot=False, dataset="", save_plot=True, save_p
             ax.set_xlabel('Epoch')
             ax.legend()
         
-    
+    plt.tight_layout()
     if save_plot and save_path:
         fig.savefig(save_path)
     else:
@@ -58,13 +58,14 @@ def plot_info_plan(MI_XH, MI_YH, cbar_epochs="8000", dataset="", save_plot=True,
 
     #ax.set_title('Information Plane - {}'.format(dataset))
     #ax.set_xticks(range(13)) # Hard coded for IB dataset 
-    ax.set_xlabel('I(X;T)')
-    ax.set_ylabel('I(T;Y)')
+    ax.set_xlabel('$I(X;T)$')
+    ax.set_ylabel('$I(T;Y)$')
     cbar = fig.colorbar(mapcs, ticks=[])
     cbar.set_label("Epochs")
     #source: https://stackoverflow.com/questions/28808143/putting-tick-values-on-top-and-bottom-of-matplotlib-colorbar
     cbar.ax.text(0.5, -0.01, '0', transform=cbar.ax.transAxes, va='top', ha='center')
     cbar.ax.text(0.5, 1.0, cbar_epochs, transform=cbar.ax.transAxes, va='bottom', ha='center')
+    plt.tight_layout()
     if save_plot and save_path:
         fig.savefig(save_path)
     else:
@@ -73,29 +74,22 @@ def plot_info_plan(MI_XH, MI_YH, cbar_epochs="8000", dataset="", save_plot=True,
     
 
 
-def plot_average_MI(num_runs, ext, data_path, save_plot, save_path, version=""):
+def plot_average_MI(num_runs, ext, data_path, save_plot, save_path):
     full_MI_XH = np.zeros(num_runs,  dtype=object)
     full_MI_YH = np.zeros(num_runs,  dtype=object)
     for i in range(num_runs):
-        if version == "":
-            with open(data_path + 'MI_XH_MI_YH_run_{}_{}.pickle'.format(i,ext), 'rb') as f:
-                MI_XH, MI_YH = pickle.load(f)
-                full_MI_XH[i] = np.array(MI_XH)
-                full_MI_YH[i] = np.array(MI_YH)
-        if version == "2":
-            with open(data_path + 'MI_XH_MI_YH_run_{}_{}2.pickle'.format(i,ext), 'rb') as f:
-                MI_XH, MI_YH = pickle.load(f)
-                full_MI_XH[i] = np.array(MI_XH)
-                full_MI_YH[i] = np.array(MI_YH)
+        with open(data_path + 'MI_XH_MI_YH_run_{}_{}.pickle'.format(i,ext), 'rb') as f:
+            MI_XH, MI_YH = pickle.load(f)
+            full_MI_XH[i] = np.array(MI_XH)
+            full_MI_YH[i] = np.array(MI_YH)
 
     avg_MI_XH = np.mean(full_MI_XH, axis = 0)
     avg_MI_YH = np.mean(full_MI_YH, axis = 0)
 
 
-
     plot_info_plan(avg_MI_XH[:], avg_MI_YH[:], save_plot=save_plot, save_path=save_path)
-    plot_layer_MI(avg_MI_XH[:], "I(X;T)",  save_plot=save_plot, save_path=save_path+"XH")
-    plot_layer_MI(avg_MI_YH[:], "I(Y;T)",  save_plot=save_plot, save_path=save_path + "YH")
+    plot_layer_MI(avg_MI_XH[:], "$I(X;T)$",  save_plot=save_plot, save_path=save_path+"XH")
+    plot_layer_MI(avg_MI_YH[:], "$I(Y;T)$",  save_plot=save_plot, save_path=save_path + "YH")
 
     return
 
@@ -114,7 +108,10 @@ def plot_max_vals(max_vals, save_path):
 
 
 def plot_binning_methods(activation_function, bin_boundaries):
-    pass
+    """
+    Currently in a notebook
+    """
+    raise NotImplementedError
 
 
 
