@@ -4,6 +4,8 @@ mains/*
 !mains/main.py
 .ipynb_chechkpoints/*
 figures/*
-__pycache__/*
+__pycache__/
 ibbsc/__pycache__/*
 ibbsc/.ipynb_chechkpoints/*
+*.py[cod]
+*/__pycache__/
