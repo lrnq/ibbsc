@@ -23,7 +23,9 @@ class FNN(nn.Module):
         activations = [] #TODO: Could be nicer
         for idx in range(self.num_layers-2):
             x = self.linears[idx](x)
-            # Maybe just pass the actual function to the constructor.
+            # TODO: Maybe just pass the actual function to the constructor.
+            # However this also restrict it to the activation function that
+            # the mutual information estimation is supported of currently.
             if self.activation == "tanh":
                 x = torch.tanh(x)
             elif self.activation == "relu":

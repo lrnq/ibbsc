@@ -2,10 +2,6 @@ import numpy as np
 
 
 def get_max_value(activity):
-    """
-    Activity is an array for the activity 
-    for each layer 
-    """
     max_val = 0
     for i in activity:
         for j in i:

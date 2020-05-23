@@ -33,11 +33,6 @@ def load_data(data_path, test_size, seed):
 
 
 def create_dataloader(X, y, batch_size, seed, shuffle=True):
-    """
-    Expects numpy arrays with data 
-    like what is returned by the load_data() 
-    function. 
-    """
     torch.manual_seed(seed)
     td = TensorDataset(torch.Tensor(X), torch.Tensor(y))
     return DataLoader(td, batch_size=batch_size, shuffle=shuffle)

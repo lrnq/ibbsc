@@ -22,7 +22,7 @@ def truncated_normal(tensor):
 def truncated_normal_(tensor):
     """
     Helper function to generate a truncated normal distribution 
-    for initializing layers as done in (Ziv, Tishby. 2017) 
+    for initializing layers.
     source: https://discuss.pytorch.org/t/implementing-truncated-normal-initializer/4778/2
     """
     mean = 0
