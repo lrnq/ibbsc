@@ -44,19 +44,17 @@ class MI:
         binned = np.digitize(activations, bins)
         _, unique_layers = np.unique(binned, axis=0, return_counts=True)
         prob_hidden_layers = unique_layers / sum(unique_layers)
-        #print(unique_layers)
-        #print(prob_hidden_layers)
+
         return -np.sum(prob_hidden_layers * np.log2(prob_hidden_layers))
 
     
     def mi_binning(self, labelixs, activations_layer, bins):
         # H(h). Note that H(h|X) = 0 so I(X;h) = H(h)
         entropy_layer = self.entropy(bins, activations_layer)
-        # below is \sum_y Pr[Y=y] * H(h|Y=y)
+        # \sum_y Pr[Y=y] * H(h|Y=y)
         entropy_layer_output = sum([self.entropy(bins, activations_layer[inds,:]) * inds.mean() for inds in labelixs.values()])
-        # below is \sum_y Pr[X=x] * H(h|X=x)
+        # \sum_y Pr[X=x] * H(h|X=x)
         #entropy_layer_input = sum([self.entropy(bins, activations_layer[inds,:]) * inds.mean() for inds in self.x_idx_patterns.values()])
-        #print(entropy_layer - entropy_layer_input, ", ", entropy_layer)
         return entropy_layer, (entropy_layer - entropy_layer_output)
 
     
