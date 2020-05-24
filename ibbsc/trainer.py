@@ -78,23 +78,16 @@ class Trainer:
         return v_loss, list(map(lambda x:x.cpu().numpy(), activations))
     
     
-    def _loop_act_loaders(self, loaders, epoch):
+    def _save_act_loader(self, loader, epoch):
         """
         If we want to save the activity after each epoch for more that one dataset.
         I.e some papers save activity for both train, test and test+train. 
         Note that the order is important here. TODO: change loaders to be a dict.
         """
-        for counter, loader in enumerate(loaders):
-            v_loss, act = self._get_epoch_activity(loader, epoch)
-            if counter == 0:
-                self.hidden_activations.append(act)
-                self._get_max_val(act)
-            elif counter == 1:
-                self.hidden_activations_train.append(act)
-            elif counter == 2:
-                self.hidden_activations_test.append(act)
-            counter += 1
-            
+        _, act = self._get_epoch_activity(loader, epoch)
+        self.hidden_activations.append(act)
+        self._get_max_val(act)
+
     
     def _get_number_correct(self, output, target):
         """
@@ -106,7 +99,7 @@ class Trainer:
         return n_corr 
     
     
-    def train(self, train_loader, test_loader, act_loaders):
+    def train(self, train_loader, test_loader, act_loader):
         self.model.apply(self._init_weights) #Init kernel weights
         #scheduler = optim.lr_scheduler.ReduceLROnPlateau(self.opt, 'min', verbose=True, patience=300)
         for epoch in range(1, self.epochs+1):
@@ -133,10 +126,10 @@ class Trainer:
         
             ### RUN ON VALIDATION DATA ###
             if epoch % 100 == 0:
-                val_loss = self._get_epoch_activity(test_loader, epoch, val=True)[0]
+                self._get_epoch_activity(test_loader, epoch, val=True)[0]
             #scheduler.step(val_loss) #Reduce LR on plateau.
             
             ### SAVE ACTIVATION ON FULL DATA ###
-            self._loop_act_loaders(act_loaders, epoch)
+            self._save_act_loader(act_loader, epoch)
             if epoch % 100 == 0:
                 print("-"*50)

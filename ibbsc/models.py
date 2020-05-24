@@ -1,6 +1,17 @@
 import torch 
 from torch import nn
 from torch.nn import functional as F
+from custom_exceptions import ActivationError
+
+
+
+# Supported activation functions for hidden layers except output
+activations_functions = {
+    "tanh" : torch.tanh,
+    "relu" : F.relu,
+    "relu6" : F.relu6,
+    "elu" : F.elu
+}
 
 
 
@@ -26,20 +37,16 @@ class FNN(nn.Module):
             # TODO: Maybe just pass the actual function to the constructor.
             # However this also restrict it to the activation function that
             # the mutual information estimation is supported of currently.
-            if self.activation == "tanh":
-                x = torch.tanh(x)
-            elif self.activation == "relu":
-                x = F.relu(x)
-            elif self.activation == "elu":
-                x = F.elu(x)
-            elif self.activation == "6relu":
-                x = F.relu6(x)
+            if activations_functions.get(self.activation):
+                x = activations_functions[self.activation](x)
             else:
-                raise("Activation Function not supported...")
-            if not self.training: #Internal flag in model
+                raise ActivationError("Activation Function not supported...")
+            if not self.training: #Internal flag 
                 activations.append(x)
         x = self.linears[-1](x)
-        if not self.training: #Internal flag in model
-            activations.append(F.softmax(x, dim=-1)) # Cross entropy loss in pytorch adds log(softmax(x)) 
+        x_softmax = F.softmax(x, dim=-1)
+        if not self.training: 
+            # Cross entropy loss in pytorch adds log(softmax(x)) 
+            activations.append(x_softmax) 
             
-        return x, F.softmax(x, dim=-1), activations # Currently only supports multiclass outputs as this softmax is hardcoded in.
+        return x, x_softmax, activations

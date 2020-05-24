@@ -1,6 +1,23 @@
 import numpy as np
 
 
+def get_min_max_vals(activation_func, activity):
+    if activation_func == "tanh":
+        min_val = -1
+        max_val = 1
+    elif activation_func == "elu":
+        min_val = -1
+        max_val = get_max_value(activity)
+    elif activation_func == "6relu":
+        min_val = 0
+        max_val = 6
+    else:
+        min_val = 0
+        max_val = get_max_value(activity)
+    return min_val, max_val
+
+
+
 def get_max_value(activity):
     max_val = 0
     for i in activity:

@@ -1,22 +1,5 @@
 import numpy as np
 import torch
-from scipy import stats
-
-
-def truncated_normal(tensor):
-    # TODO: Fix uglyness 
-    cuda = tensor.is_cuda
-    if cuda:
-        tensor = tensor.cpu().detach().numpy()
-    else:
-        tensor = tensor.detach().numpy()
-    a, b = -2, 2
-    X = stats.truncnorm(a,b, loc=0, scale=1/float(np.sqrt(tensor.shape[0])))
-    truncnorm = X.rvs(tensor.shape)
-    if cuda:
-        return torch.from_numpy(truncnorm).cuda()
-    else:
-        return torch.from_numpy(truncnorm)
 
 
 def truncated_normal_(tensor):

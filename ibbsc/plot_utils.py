@@ -44,8 +44,7 @@ def plot_layer_MI(MI, y_label, subplot=False, dataset="", save_plot=True, save_p
 def plot_info_plan(MI_XH, MI_YH, cbar_epochs="8000", dataset="", save_plot=True, save_path=None):
     fig, ax = plt.subplots(1)
     
-    # Similar to ibsgd and idnn
-    # source: source https://stackoverflow.com/questions/8389636/creating-over-20-unique-legend-colors-using-matplotlib
+    # source: https://stackoverflow.com/questions/8389636/creating-over-20-unique-legend-colors-using-matplotlib
     cmap = plt.get_cmap('gnuplot')
     norm_colors  = matplotlib.colors.Normalize(vmin=0, vmax=MI_XH.shape[0]-1)
     mapcs = matplotlib.cm.ScalarMappable(norm=norm_colors, cmap=cmap)
@@ -114,6 +113,11 @@ def plot_binning_methods(activation_function, bin_boundaries):
     raise NotImplementedError
 
 
+def plot_layer_max_vals():
+    """
+    Currently in a notebook
+    """
+    raise NotImplementedError
 
 
 def plot_subset_runs_info(runs, ext, save_path, data_path, save_plot=True):
