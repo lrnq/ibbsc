@@ -6,8 +6,6 @@ An example of how to run it is shown at the bottom.
 """
 
 import sys
-sys.path.insert(0,'../ibbsc')
-
 from trainer import Trainer
 from mutual_inf import MI
 import argparse
@@ -16,6 +14,7 @@ from torch import optim
 import info_utils
 import numpy as np
 from models import FNN
+import plot_utils
 import torch 
 from torch import nn
 import pickle
@@ -79,13 +78,16 @@ def main_func(activation, data_path, save_path, batch_size, epochs, layer_sizes,
         optimizer = optim.Adam(model.parameters(), lr=0.0004)
         tr = Trainer(loss_function, epochs, model, optimizer, device)
         tr.train(train_loader, test_loader, act_full_loader)
-        with open(save_path + '/training_history_run_{}_{}.pickle'.format(i, batch_size), 'wb') as f:
-            pickle.dump([tr.error_train, tr.error_test], f, protocol=pickle.HIGHEST_PROTOCOL)
-            f.close()
 
-        #with open(save_path + '/max_values{}_{}.pickle'.format(i, batch_size), 'wb') as f:
-        #    pickle.dump(tr.max_value_layers, f, protocol=pickle.HIGHEST_PROTOCOL)
-        #    f.close()
+        if args.save_train_error:
+            with open(save_path + '/training_history_run_{}_{}.pickle'.format(i, batch_size), 'wb') as f:
+                pickle.dump([tr.error_train, tr.error_test], f, protocol=pickle.HIGHEST_PROTOCOL)
+                f.close()
+
+        if args.save_max_vals:
+            with open(save_path + '/max_values{}_{}.pickle'.format(i, batch_size), 'wb') as f:
+                pickle.dump(tr.max_value_layers, f, protocol=pickle.HIGHEST_PROTOCOL)
+                f.close()
 
         for j in num_bins:
             if "variable" in mi_methods:
@@ -134,5 +136,36 @@ def main_func(activation, data_path, save_path, batch_size, epochs, layer_sizes,
 if __name__ == "__main__":
     args = default_params.default_params()
     print(args)
+    print("Running main function...")
     main_func(args.activation, args.data, args.save_path, args.batch_size, args.epochs,
              args.layer_sizes, args.mi_methods, args.num_bins, args.num_runs, args.try_gpu)
+    if args.plot_results:
+        print("Begin plotting...")
+        ext = str(args.batch_size) + "_"
+        exts = []
+        for method in args.mi_methods:
+            for bins in args.num_bins:
+                if method == "fixed":
+                    exts.append(ext + str(bins) + "bins")
+                else:
+                    exts.append(ext + str(bins) + str(method))
+
+        if args.save_path[-1] != "/":
+            args.save_path += "/"
+        for ext in exts:
+            # Read in all MI data from different runs
+            full_MI_XH = np.zeros(args.num_runs,  dtype=object)
+            full_MI_YH = np.zeros(args.num_runs,  dtype=object)
+            for i in range(args.num_runs):
+                with open(args.save_path + 'MI_XH_MI_YH_run_{}_{}.pickle'.format(i,ext), 'rb') as f:
+                    MI_XH, MI_YH = pickle.load(f)
+                    full_MI_XH[i] = np.array(MI_XH)
+                    full_MI_YH[i] = np.array(MI_YH)
+
+            avg_MI_XH = np.mean(full_MI_XH, axis = 0)
+            avg_MI_YH = np.mean(full_MI_YH, axis = 0)
+
+
+            plot_utils.plot_layer_MI(avg_MI_XH[:], "I(X;T)")
+            plot_utils.plot_layer_MI(avg_MI_YH[:], "I(Y;T)")
+            plot_utils.plot_info_plan(avg_MI_XH[:], avg_MI_YH[:])

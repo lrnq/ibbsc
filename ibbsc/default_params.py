@@ -25,7 +25,7 @@ def default_params():
                         type=int, help="Number of times to run the network")  
 
     parser.add_argument("--mi_methods", "-mi", dest="mi_methods", default="[adaptive]",
-                        help="Number of times to run the network. Can contain multiple methods")  
+                        help="Method for estimating the mutual information. Can contain multiple methods")  
 
     parser.add_argument("--try_gpu","-g", dest="try_gpu", default=0,
                         type=int, help="Whether or not to try and run on the GPU. Seeds may not be set here. Expects a 0 or 1.")
@@ -34,14 +34,26 @@ def default_params():
                         help="Number of bins to use for MI estimation. Expects list of values.") 
 
     parser.add_argument("--layer_sizes", "-ls", dest="layer_sizes", default="[12, 10, 7, 5, 4, 3, 2]",
-                        help="Number of times to run the network")   
+                        help="The size of the layers of the network. Default is the IB network.")  
+
+    parser.add_argument("--plot_results", "-pr", dest="plot_results", default=0,
+                        type=int, help="Plot the results of the data just generated.")   
+
+    parser.add_argument("--save_max_vals", "-sm", dest="save_max_vals", default=0,
+                        type=int, help="Save max values for each layer at each epoch.") 
+
+    parser.add_argument("--save_train_error", "-ste", dest="save_train_error", default=1,
+                        type=int, help="Save training error as a function of the epochs for each run.") 
                     
     args = parser.parse_args()
 
-    args.mi_methods = [x.strip() for x in re.findall('\[(.*?)\]', args.mi_methods)[0].split(",")]   
-    args.num_bins = [int(x.strip()) for x in re.findall('\[(.*?)\]', args.num_bins)[0].split(",")]
-    args.layer_sizes = [int(x.strip()) for x in re.findall('\[(.*?)\]', args.layer_sizes)[0].split(",")]
+    args.mi_methods = [x.strip() for x in re.findall(r'\[(.*?)\]', args.mi_methods)[0].split(",")]   
+    args.num_bins = [int(x.strip()) for x in re.findall(r'\[(.*?)\]', args.num_bins)[0].split(",")]
+    args.layer_sizes = [int(x.strip()) for x in re.findall(r'\[(.*?)\]', args.layer_sizes)[0].split(",")]
     args.try_gpu = bool(args.try_gpu)
+    args.plot_results = bool(args.plot_results)
+    args.save_train_error = bool(args.save_train_error)
+    args.save_max_vals = bool(args.save_max_vals)
     if args.batch_size != "full":
         args.batch_size = int(args.batch_size)
 

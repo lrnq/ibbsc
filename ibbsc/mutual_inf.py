@@ -28,12 +28,15 @@ class MI:
             self.x_idx_patterns[i] = i == inv
 
 
-
-    def entropy(self, bins, activations):
+    def get_prob_dist(self, bins, activations):
         binned = np.digitize(activations, bins)
         _, unique_layers = np.unique(binned, axis=0, return_counts=True)
         prob_hidden_layers = unique_layers / sum(unique_layers)
+        return prob_hidden_layers
 
+
+    def entropy(self, bins, activations):
+        prob_hidden_layers = self.get_prob_dist(bins, activations)
         return -np.sum(prob_hidden_layers * np.log2(prob_hidden_layers))
 
 
@@ -42,11 +45,9 @@ class MI:
 
     
     def mutual_information(self, cond_bool, activations_layer, bins):
-        # H(h). Note that H(h|X) = 0 so I(X;h) = H(h)
-        entropy_layer = self.entropy(bins, activations_layer)
-        # \sum_y Pr[Y=y] * H(h|Y=y)
-        entropy_layer_output = self.cond_entropy(cond_bool, activations_layer, bins)
-        # \sum_y Pr[X=x] * H(h|X=x)
+        entropy_layer = self.entropy(bins, activations_layer) # H(h)
+        entropy_layer_output = self.cond_entropy(cond_bool, activations_layer, bins) # \sum_y Pr[Y=y] * H(h|Y=y)
+        # Note that H(h|X) = 0 so I(X;h) = H(h). Thus the below is not needed.
         #entropy_layer_input = sum([self.entropy(bins, activations_layer[inds,:]) * inds.mean() for inds in self.x_idx_patterns.values()])
         return entropy_layer, (entropy_layer - entropy_layer_output)
 
