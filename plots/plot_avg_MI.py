@@ -4,11 +4,13 @@ import numpy as np
 import pickle
 import plot_utils
 
-RANGE = 40
-ext = "256_100adaptive"
-data_path = "../data/relu_adaptive_30/"
+
+# Script to quickly see average mutual information 
+
+RANGE = 19
+ext = "256_30adaptive"
+data_path = "../data/elu_adaptive_30/"
 # Read in all MI data from different runs
-#dims = 
 full_MI_XH = np.zeros(RANGE,  dtype=object)
 full_MI_YH = np.zeros(RANGE,  dtype=object)
 for i in range(RANGE):

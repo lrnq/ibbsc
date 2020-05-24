@@ -1,8 +1,16 @@
+"""
+This is the main function that can generate and save the relevant data to be plotted 
+with the functions in generate_plots_thesis.py. 
+
+An example of how to run it is shown at the bottom.
+"""
+
 import sys
 sys.path.insert(0,'../ibbsc')
 
 from trainer import Trainer
 from mutual_inf import MI
+import argparse
 import data_utils
 from torch import optim
 import info_utils
@@ -13,6 +21,7 @@ from torch import nn
 import pickle
 import tqdm
 import os 
+import default_params
 
 
 def check_for_data(save_path):
@@ -40,15 +49,12 @@ def prepare_data(data_path, test_size, seed, batch_size):
     # Activitiy loaders
     full_X, full_y = np.concatenate((X_train, X_test)), np.concatenate((y_train, y_test))
     act_full_loader = data_utils.create_dataloader(full_X, full_y, len(full_X), seed, shuffle=False)
-    #act_train_loader = data_utils.create_dataloader(X_train, y_train, len(X_train))
-    #act_test_loader = data_utils.create_dataloader(X_test, y_test, len(X_test))
-    #act_loaders = [act_full_loader]
 
     return train_loader, test_loader, act_full_loader
 
 
 
-def main_func(activation, data_path, save_path, batch_size, epochs, layer_sizes, mi_methods, num_bins=30, num_runs=1, try_gpu=False):
+def main_func(activation, data_path, save_path, batch_size, epochs, layer_sizes, mi_methods, num_bins=[30], num_runs=1, try_gpu=False):
     
     check_for_data(save_path)
 
@@ -126,5 +132,7 @@ def main_func(activation, data_path, save_path, batch_size, epochs, layer_sizes,
 
 
 if __name__ == "__main__":
-    ib_data_path = "../data/var_u.mat"
-    main_func("elu", ib_data_path, "../data/test_folder", 256, 100, [12, 10, 7, 5, 4, 3, 2], ["adaptive"], num_bins=[30], num_runs=2, try_gpu=False)
+    args = default_params.default_params()
+    print(args)
+    main_func(args.activation, args.data, args.save_path, args.batch_size, args.epochs,
+             args.layer_sizes, args.mi_methods, args.num_bins, args.num_runs, args.try_gpu)

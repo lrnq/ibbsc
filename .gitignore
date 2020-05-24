@@ -2,6 +2,7 @@ data/*
 !data/var_u.mat
 mains/*
 !mains/main.py
+!mains/default_params.py
 .ipynb_checkpoints/*
 figures/*
 __pycache__/

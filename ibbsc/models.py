@@ -14,22 +14,17 @@ activations_functions = {
 }
 
 
-
 class FNN(nn.Module):
     def __init__(self, layer_sizes, activation="tanh", seed=0):
         super(FNN, self).__init__()
         torch.manual_seed(seed)
-        self.linears = nn.ModuleList()
         self.activation = activation
         self.num_layers = len(layer_sizes)
         self.inp_size = layer_sizes[0]
-        
-        h_in = self.inp_size
-        for h_out in layer_sizes[1:]:
-            self.linears.append(nn.Linear(h_in, h_out))
-            h_in = h_out
+
+        in_out_pairs = [(layer_sizes[i], layer_sizes[i+1]) for i in range(len(layer_sizes)-1)]
+        self.linears = nn.ModuleList([nn.Linear(*pair) for pair in in_out_pairs])
     
-        
     def forward(self, x):
         activations = [] #TODO: Could be nicer
         for idx in range(self.num_layers-2):
