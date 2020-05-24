@@ -14,8 +14,6 @@ class Trainer:
         self.epochs = epochs
         self.model = model
         self.hidden_activations = [] # index 1: epoch num, index2 : layer_num
-        self.hidden_activations_test = []
-        self.hidden_activations_train = []
         self.val_loss = []
         self.train_loss = []
         self.full_loss = []

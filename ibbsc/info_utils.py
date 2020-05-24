@@ -8,7 +8,7 @@ def get_min_max_vals(activation_func, activity):
     elif activation_func == "elu":
         min_val = -1
         max_val = get_max_value(activity)
-    elif activation_func == "6relu":
+    elif activation_func == "relu6":
         min_val = 0
         max_val = 6
     else:
