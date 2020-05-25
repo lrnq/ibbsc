@@ -7,9 +7,9 @@ import plot_utils
 
 # Script to quickly see average mutual information 
 
-RANGE = 12
-ext = "full_100bins"
-data_path = "../data/relu_full_100_fixed/"
+RANGE = 7
+ext = "full_30adaptive"
+data_path = "../data/tanh_adaptive_30_/"
 # Read in all MI data from different runs
 full_MI_XH = np.zeros(RANGE,  dtype=object)
 full_MI_YH = np.zeros(RANGE,  dtype=object)

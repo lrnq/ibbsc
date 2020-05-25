@@ -106,18 +106,78 @@ def plot_max_vals(max_vals, save_path):
     return 
 
 
-def plot_binning_methods(activation_function, bin_boundaries):
+
+def plot_tain_test_error(train_error, test_error, save_path):
     """
-    Currently in a notebook
+    Should get a list of lists with the training errors. 
+    Size will be (number of runs to average, number of epochs)
     """
-    raise NotImplementedError
+    avg_error_train = np.mean(train_error, axis = -1)
+    avg_error_test = np.mean(test_error, axis = -1)
+
+    fig = plt.figure()
+    ax = plt.subplot(111)
+
+    ax.plot(np.arange(len(avg_error_test)), avg_error_test, label="Test error")
+    ax.plot(np.arange(len(avg_error_test)), avg_error_train, label="Train error")
+    ax.legend(loc="best",fancybox=True, shadow=True)
+    ax.set_xlabel("Epoch")
+    ax.set_ylabel("Error")
+    fig.savefig(save_path, dpi=700)
+    #fig.show()
+    return 
 
 
-def plot_layer_max_vals():
+def plot_binning_methods(adaptive_bins, num_bins, save_path_uniform, save_path_adaptive):
     """
-    Currently in a notebook
+    Currently only supports tanh
     """
-    raise NotImplementedError
+
+    ### Start plotting uniform binning method
+    in_array = np.linspace(-5, 5, 200) 
+    act = np.tanh(in_array) 
+
+    bins = np.linspace(-1, 1, num_bins)
+    plt.plot(in_array, act, label="Activation function") 
+    plt.title("Uniform Binning") 
+  
+    for y in bins[:-1]:
+        plt.hlines(y, -5, 5, linewidth=1, linestyles="dotted")
+    plt.hlines(bins[-1], -5, 5, linewidth=1, linestyles="dotted", label="Bin Borders")
+    plt.legend(loc="lower right")
+    plt.tight_layout()
+    plt.savefig(save_path_uniform, dpi=700)
+
+    
+    ### Start plotting adaptive binning method
+    random_epoch = np.random.randint(0, len(adapt_bins)-1)
+    random_layer = np.random.randint(0, len(adapt_bins[0])-2) # Not softmax layer
+    adapt_bins = adaptive_bins[random_epoch][random_layer]
+    plt.plot(in_array, act, label="Activation function") 
+    plt.title("Adaptive Binning") 
+
+    for y in adapt_bins[:-1]:
+        plt.hlines(y, -5, 5, linewidth=1, linestyles="dotted")
+    plt.hlines(adapt_bins[-1], -5, 5, linewidth=1, linestyles="dotted", label="Bin Borders")
+    plt.legend(loc="lower right")
+    plt.tight_layout()
+    plt.savefig(save_path_adaptive, dpi=700)
+    return 
+
+
+
+def plot_layer_max_vals(max_vals, save_path, activation_str):
+    fig = plt.figure()
+    ax = plt.subplot(111)
+    for idx, i in enumerate(max_vals.T[:-1]):
+        ax.plot(i, label = activation_str + " layer {}".format(idx+1))
+    ax.set_xlabel("Epoch")
+    ax.set_ylabel("Activation value")
+
+    ax.legend(loc="best",fancybox=True, shadow=True)
+    fig.savefig(save_path)
+
+    return 
 
 
 def plot_subset_runs_info(runs, ext, save_path, data_path, save_plot=True):

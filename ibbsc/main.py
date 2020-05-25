@@ -1,5 +1,5 @@
 """
-This is the main function that can generate and save the relevant data to be plotted 
+This is the main file that can generate and save the relevant data to be plotted 
 with the functions in generate_plots_thesis.py. 
 
 An example of how to run it is shown at the bottom.
@@ -166,6 +166,6 @@ if __name__ == "__main__":
             avg_MI_YH = np.mean(full_MI_YH, axis = 0)
 
 
-            plot_utils.plot_layer_MI(avg_MI_XH[:], "I(X;T)")
-            plot_utils.plot_layer_MI(avg_MI_YH[:], "I(Y;T)")
+            plot_utils.plot_layer_MI(avg_MI_XH[:], "$I(X;T)$")
+            plot_utils.plot_layer_MI(avg_MI_YH[:], "$I(Y;T)$")
             plot_utils.plot_info_plan(avg_MI_XH[:], avg_MI_YH[:])

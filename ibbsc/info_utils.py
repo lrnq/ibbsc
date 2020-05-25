@@ -49,20 +49,21 @@ def get_bins_layers(activations, num_bins, act):
         epoch_bins=[]
         for layer in epoch:
             if act in ["tanh", "elu"]:
-                layer_bins=[-1-1e-11] # min value possible
+                lb=[-1] # min value possible
             else:
-                layer_bins=[0] # min value possible 
+                lb=[0] # min value possible 
             # layer.flatten() is of shape (num_samples, size_layer)
             # Find all unique values in the layer over all samples
             unique_act_vals=np.unique(layer.flatten()) 
             # Get values that is not the min value
-            sorted_ua = np.array(sorted(list(set(unique_act_vals) - set(layer_bins))))
+            sorted_ua = np.sort(np.setdiff1d(unique_act_vals,lb))
+            #sorted_ua = np.array(sorted(list(set(unique_act_vals) - set(lb))))
             if len(sorted_ua)>0: 
                 last_idx = np.floor((((num_bins-1)*(len(sorted_ua))) / num_bins))
                 inds = list(map(int, np.linspace(0, last_idx, num_bins)))
                 borders = list(map(lambda x: sorted_ua[x], inds))
-                layer_bins.extend(borders)
-                layer_bins.append(sorted_ua[-1])
-            epoch_bins.append(np.array(layer_bins))
+                lb.extend(borders)
+                lb.append(sorted_ua[-1])
+            epoch_bins.append(np.array(lb))
         bins.append(epoch_bins)    
     return np.array(bins)

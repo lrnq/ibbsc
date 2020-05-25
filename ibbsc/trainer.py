@@ -58,7 +58,7 @@ class Trainer:
                     data, label= data.to(self.device), label.long().to(self.device)
                     yhat, yhat_softmax, activations = self.model(data)
                     v_loss += self.loss_function(yhat, label).item()
-                    acc += self._get_number_correct(yhat_softmax, label).item()
+                    acc += self._get_number_correct(yhat_softmax, label)
             else:
                 data, label = loader.dataset.tensors[0].to(self.device), loader.dataset.tensors[1].long().to(self.device)
                 yhat, yhat_softmax, activations = self.model(data)
@@ -93,7 +93,11 @@ class Trainer:
         Requires target to be a flat vector i.e not one-hot encoded.
         TODO: rewrite
         """
-        n_corr = (target == output.argmax(dim=1)).sum()
+        n_corr = 0
+        preds = output.argmax(dim=1).numpy()
+        for i in range(len(target)):
+            if target[i] == preds[i]:
+                n_corr += 1
         return n_corr 
     
     
@@ -110,23 +114,24 @@ class Trainer:
                 yhat, yhat_softmax, _ = self.model(train_data)
                 #print(yhat_softmax)
                 loss = self.loss_function(yhat, label)
-                acc_train += self._get_number_correct(yhat_softmax, label).item()
+                acc_train += self._get_number_correct(yhat_softmax, label)
                 self.opt.zero_grad()
                 loss.backward()
                 train_loss += loss.item()
                 self.opt.step()
+            acc_train = acc_train / float(len(train_loader.dataset))
             self.error_train.append(1-acc_train)
             train_loss = train_loss / len(train_loader.dataset)
             self.train_loss.append(train_loss)
             if epoch % 100 == 0:
-                print('Epoch: {} Train loss: {:.7f},  Train Acc. {:.4f}'.format(epoch, train_loss, acc_train / float(len(train_loader.dataset))))
+                print('Epoch: {} Train loss: {:.7f},  Train Acc. {:.4f}'.format(epoch, train_loss, acc_train))
             ### STOP MAIN TRAIN LOOP ###
         
             ### RUN ON VALIDATION DATA ###
             if epoch % 100 == 0:
                 self._get_epoch_activity(test_loader, epoch, val=True)[0]
             #scheduler.step(val_loss) #Reduce LR on plateau.
-            
+            print(float(len(train_loader.dataset)))
             ### SAVE ACTIVATION ON FULL DATA ###
             self._save_act_loader(act_loader, epoch)
             if epoch % 100 == 0:
