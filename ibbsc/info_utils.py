@@ -49,7 +49,7 @@ def get_bins_layers(activations, num_bins, act):
         epoch_bins=[]
         for layer in epoch:
             if act in ["tanh", "elu"]:
-                lb=[-1] # min value possible
+                lb=[-1.000000000001] # min value possible
             else:
                 lb=[0] # min value possible 
             # layer.flatten() is of shape (num_samples, size_layer)

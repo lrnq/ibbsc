@@ -44,6 +44,15 @@ def default_params():
 
     parser.add_argument("--save_train_error", "-ste", dest="save_train_error", default=1,
                         type=int, help="Save training error as a function of the epochs for each run.") 
+
+    parser.add_argument("--save_mutual_information", "-smi", dest="save_mutual_information", default=1,
+                        type=int, help="Save mutual information after each epoch.") 
+
+    parser.add_argument("--start_from", "-sf", dest="start_from", default=0,
+                        type=int, help="Which run to start from.") 
+
+    parser.add_argument("--test_size", "-ts", dest="test_size", default=819,
+                        type=int, help="Number of test samples to include. Can be a float indicating a percentage or an int indicating number of samples.") 
                     
     args = parser.parse_args()
 

@@ -53,7 +53,7 @@ def prepare_data(data_path, test_size, seed, batch_size):
 
 
 
-def main_func(activation, data_path, save_path, batch_size, epochs, layer_sizes, mi_methods, num_bins=[30], num_runs=1, try_gpu=False):
+def main_func(activation, data_path, save_path, batch_size, epochs, layer_sizes, mi_methods, test_size, num_bins=[30], num_runs=1, try_gpu=False):
     
     check_for_data(save_path)
 
@@ -65,70 +65,78 @@ def main_func(activation, data_path, save_path, batch_size, epochs, layer_sizes,
     print("Using "+ str(device))
 
     loss_function = nn.CrossEntropyLoss() # Only one supported as of now
-    #max_values = []
+    max_values = []
 
 
-    for i in tqdm.tqdm(range(num_runs)):
+    for i in tqdm.tqdm(range(args.start_from, num_runs)):
         torch.manual_seed(i)
         np.random.seed(i)
         
-        train_loader, test_loader, act_full_loader = prepare_data(data_path, 819, i, batch_size)
+        train_loader, test_loader, act_full_loader = prepare_data(data_path, test_size, i, batch_size)
 
         model = FNN(layer_sizes, activation=activation, seed=i).to(device)
         optimizer = optim.Adam(model.parameters(), lr=0.0004)
         tr = Trainer(loss_function, epochs, model, optimizer, device)
+        print("Start Training...")
         tr.train(train_loader, test_loader, act_full_loader)
 
         if args.save_train_error:
+            print("Saving train and test error...")
             with open(save_path + '/training_history_run_{}_{}.pickle'.format(i, batch_size), 'wb') as f:
                 pickle.dump([tr.error_train, tr.error_test], f, protocol=pickle.HIGHEST_PROTOCOL)
                 f.close()
 
         if args.save_max_vals:
+            print("Saving max activation values...")
             with open(save_path + '/max_values{}_{}.pickle'.format(i, batch_size), 'wb') as f:
-                pickle.dump(tr.max_value_layers, f, protocol=pickle.HIGHEST_PROTOCOL)
+                print(np.array(tr.max_value_layers_mi).max())
+                pickle.dump(tr.max_value_layers_mi, f, protocol=pickle.HIGHEST_PROTOCOL)
                 f.close()
 
-        for j in num_bins:
-            if "variable" in mi_methods:
-                max_value = info_utils.get_max_value(tr.hidden_activations)
-                num_bins = int(max_value*15)
-                mutual_inf = MI(tr.hidden_activations, act_full_loader,act=activation, num_of_bins=j)
-                MI_XH, MI_YH = mutual_inf.get_mi(method="fixed")
-                with open(save_path + '/MI_XH_MI_YH_run_{}_{}_{}variable.pickle'.format(i, batch_size, j), 'wb') as f:
-                    pickle.dump([MI_XH, MI_YH], f, protocol=pickle.HIGHEST_PROTOCOL)
-                    f.close()
+        if args.save_mutual_information:
+            for j in num_bins:
+                print("Saving mutual information with {} bins...".format(j))
+                if "variable" in mi_methods:
+                    max_value = info_utils.get_max_value(tr.hidden_activations)
+                    num_bins = int(max_value*15)
+                    mutual_inf = MI(tr.hidden_activations, act_full_loader,act=activation, num_of_bins=j)
+                    MI_XH, MI_YH = mutual_inf.get_mi(method="fixed")
+                    with open(save_path + '/MI_XH_MI_YH_run_{}_{}_{}variable.pickle'.format(i, batch_size, j), 'wb') as f:
+                        pickle.dump([MI_XH, MI_YH], f, protocol=pickle.HIGHEST_PROTOCOL)
+                        f.close()
 
 
-            if "fixed" in mi_methods:
-                mutual_inf = MI(tr.hidden_activations, act_full_loader,act=activation, num_of_bins=j)
-                MI_XH, MI_YH = mutual_inf.get_mi(method="fixed")
+                if "fixed" in mi_methods:
+                    mutual_inf = MI(tr.hidden_activations, act_full_loader,act=activation, num_of_bins=j)
+                    MI_XH, MI_YH = mutual_inf.get_mi(method="fixed")
 
-                with open(save_path + '/MI_XH_MI_YH_run_{}_{}_{}bins.pickle'.format(i, batch_size, j), 'wb') as f:
-                    pickle.dump([MI_XH, MI_YH], f, protocol=pickle.HIGHEST_PROTOCOL)
-                    f.close()
-            
-            if "adaptive" in mi_methods:
-                mutual_inf = MI(tr.hidden_activations, act_full_loader,act=activation, num_of_bins=j)
-                MI_XH, MI_YH = mutual_inf.get_mi(method="adaptive")
+                    with open(save_path + '/MI_XH_MI_YH_run_{}_{}_{}bins.pickle'.format(i, batch_size, j), 'wb') as f:
+                        pickle.dump([MI_XH, MI_YH], f, protocol=pickle.HIGHEST_PROTOCOL)
+                        f.close()
+                
+                if "adaptive" in mi_methods:
+                    mutual_inf = MI(tr.hidden_activations, act_full_loader,act=activation, num_of_bins=j)
+                    MI_XH, MI_YH = mutual_inf.get_mi(method="adaptive")
 
-                with open(save_path + '/MI_XH_MI_YH_run_{}_{}_{}adaptive.pickle'.format(i, batch_size, j), 'wb') as f:
-                    pickle.dump([MI_XH, MI_YH], f, protocol=pickle.HIGHEST_PROTOCOL)
-                    f.close()
+                    with open(save_path + '/MI_XH_MI_YH_run_{}_{}_{}adaptive.pickle'.format(i, batch_size, j), 'wb') as f:
+                        pickle.dump([MI_XH, MI_YH], f, protocol=pickle.HIGHEST_PROTOCOL)
+                        f.close()
 
-        #max_values.append(mutual_inf.max_val)
-        #print(max_values)
+        minv, maxv = info_utils.get_min_max_vals(activation, tr.hidden_activations)
+        max_values.append(maxv)
+        print(max_values)
 
         # Need to delete everything from memory
         # because python will keep things in memory until computation of overwriting
         # variable is finished for the next iteration. This simply fills up my RAM.
         del model
         del tr
-        del mutual_inf
+        if args.save_mutual_information:
+            del mutual_inf
+            del MI_XH
+            del MI_YH
         del train_loader
         del test_loader
-        del MI_XH
-        del MI_YH
         del act_full_loader
     print("Done runnning...")
 
@@ -137,8 +145,10 @@ if __name__ == "__main__":
     args = default_params.default_params()
     print(args)
     print("Running main function...")
-    main_func(args.activation, args.data, args.save_path, args.batch_size, args.epochs,
-             args.layer_sizes, args.mi_methods, args.num_bins, args.num_runs, args.try_gpu)
+    main_func(args.activation, args.data, args.save_path,
+              args.batch_size, args.epochs, args.layer_sizes,
+              args.mi_methods, args.test_size, args.num_bins,
+              args.num_runs, args.try_gpu)
     if args.plot_results:
         print("Begin plotting...")
         ext = str(args.batch_size) + "_"

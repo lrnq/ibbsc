@@ -19,7 +19,8 @@ class Trainer:
         self.full_loss = []
         self.error_train = []
         self.error_test = []
-        self.max_value_layers = [] # should be of size (num_epochs, depth network)
+        self.max_value_layers_train = [] # should be of size (num_epochs, depth network)
+        self.max_value_layers_mi = [] # should be of size (num_epochs, depth network)
         #self.weights = dict() #  Not currently in use, but if plot of grad of weights are needed we need this
         #self.ws_grads = dict() # Not currently in use, but if plot of grad of weights are needed we need this
         
@@ -35,14 +36,17 @@ class Trainer:
                 layer.bias.data.fill_(0.00)
 
 
-    def _get_max_val(self, activation_values):
+    def _get_max_val(self, activation_values, train=False, mi=False):
         """
         Activation values are a list of size (num_samples, net_depth) 
         """
         cur_epoch_max = []
         for layer in activation_values:
             cur_epoch_max.append(layer.max())
-        self.max_value_layers.append(cur_epoch_max)
+        if train:
+            self.max_value_layers_train.append(cur_epoch_max)
+        if mi:
+            self.max_value_layers_mi.append(cur_epoch_max)
         return
         
     def _get_epoch_activity(self, loader, epoch, val=False):
@@ -84,7 +88,7 @@ class Trainer:
         """
         _, act = self._get_epoch_activity(loader, epoch)
         self.hidden_activations.append(act)
-        self._get_max_val(act)
+        self._get_max_val(act, mi=True)
 
     
     def _get_number_correct(self, output, target):
@@ -127,11 +131,10 @@ class Trainer:
                 print('Epoch: {} Train loss: {:.7f},  Train Acc. {:.4f}'.format(epoch, train_loss, acc_train))
             ### STOP MAIN TRAIN LOOP ###
         
-            ### RUN ON VALIDATION DATA ###
-            if epoch % 100 == 0:
-                self._get_epoch_activity(test_loader, epoch, val=True)[0]
+            ### RUN ON TEST DATA ###
+            self._get_epoch_activity(test_loader, epoch, val=True)[0]
             #scheduler.step(val_loss) #Reduce LR on plateau.
-            print(float(len(train_loader.dataset)))
+            #print(float(len(train_loader.dataset)))
             ### SAVE ACTIVATION ON FULL DATA ###
             self._save_act_loader(act_loader, epoch)
             if epoch % 100 == 0:
