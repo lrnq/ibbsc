@@ -1,7 +1,7 @@
 # ibbsc
 
 
-# Usage 
+## Usage 
 The section below assume that `python` is linked to the correct version. If mutiple version of Python exist on your system you may run e.g `python3.8`.   
 
 ```  
@@ -31,7 +31,7 @@ Parameters:
 
 For the default parameter values see `ibbsc/default_params.py`
 
-# Examples
+## Examples
 
 **Running these exampes takes roughly 15-25 hours, dependend on the example, on a decent laptop.** 
 
