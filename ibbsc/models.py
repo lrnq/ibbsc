@@ -10,7 +10,8 @@ activations_functions = {
     "tanh" : torch.tanh,
     "relu" : F.relu,
     "relu6" : F.relu6,
-    "elu" : F.elu
+    "elu" : F.elu,
+    "linear" : "linear"
 }
 
 
@@ -33,7 +34,10 @@ class FNN(nn.Module):
             # However this also restrict it to the activation function that
             # the mutual information estimation is supported of currently.
             if activations_functions.get(self.activation):
-                x = activations_functions[self.activation](x)
+                if self.activation == "linear":
+                    pass
+                else:
+                    x = activations_functions[self.activation](x)
             else:
                 raise ActivationError("Activation Function not supported...")
             if not self.training: #Internal flag 

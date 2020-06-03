@@ -48,7 +48,10 @@ def get_bins_layers(activations, num_bins, act):
     for epoch in activations:
         epoch_bins=[]
         for layer in epoch:
-            if act in ["tanh", "elu"]:
+            if act == "linear":
+                lb_val = layer.min()
+                lb = [lb_val]
+            elif act in ["tanh", "elu"]:
                 lb=[-1.000000000001] # min value possible
             else:
                 lb=[0] # min value possible 

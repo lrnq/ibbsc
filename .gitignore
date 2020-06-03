@@ -11,3 +11,4 @@ ibbsc/.ipynb_checkpoints/*
 *.py[cod]
 */.ipynb_checkpoints/
 */__pycache__/
+*/*.png
