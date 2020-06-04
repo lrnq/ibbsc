@@ -1,7 +1,7 @@
 # ibbsc
 
 ## Setup
-It is required to [Conda](https://docs.conda.io/en/latest/) on your system to use the provided `YAML` file from the repo. When conda is install you can create an enviroment with the requirements by running  
+It is required to have installed [Conda](https://docs.conda.io/en/latest/) on your system to use the provided `YAML` file from the repo. When conda is install you can create an enviroment with the requirements by running  
 
 `conda env create -f ibbsc.yml`
 
