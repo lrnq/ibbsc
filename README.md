@@ -1,15 +1,18 @@
 # ibbsc
 
+## Setup
+It is required to [Conda](https://docs.conda.io/en/latest/) on your system to use the provided `YAML` file from the repo. When conda is install you can create an enviroment with the requirements by running 
+`conda env create -f ibbsc.yml`
 
 ## Usage 
-The section below assume that `python` is linked to the correct version. If mutiple version of Python exist on your system you may run e.g `python3.8`.   
-
+The section below assume that `python` is linked to the correct version (it will be inside the Conda enviroment).
 ```  
 Usage:  
     cd ibbsc
     python main.py [Parameters]
   
 Parameters:  
+    -h    --help                        Prints help similar to this.
     -a    --activation                  Sets the activation function for the hidden layers, but the last.  
     -bs   --batch_size                  Batch size for training.   
     -d    --data                        Path to the data file used for training.

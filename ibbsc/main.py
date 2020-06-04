@@ -85,6 +85,9 @@ def main_func(activation, data_path, save_path, batch_size, epochs, layer_sizes,
             with open(save_path + '/training_history_run_{}_{}.pickle'.format(i, batch_size), 'wb') as f:
                 pickle.dump([tr.error_train, tr.error_test], f, protocol=pickle.HIGHEST_PROTOCOL)
                 f.close()
+            with open(save_path + '/loss_run_{}_{}.pickle'.format(i, batch_size), 'wb') as f:
+                pickle.dump([tr.train_loss, tr.val_loss], f, protocol=pickle.HIGHEST_PROTOCOL)
+                f.close()
 
         if args.save_max_vals:
             print("Saving max activation values...")

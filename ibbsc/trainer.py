@@ -33,7 +33,7 @@ class Trainer:
             #nn.init.trunc_normal_(layer.weight, mean=0, std=1/np.sqrt(layer.weight.shape[0]))
             truncated_normal_(layer.weight)
             if layer.bias != None: 
-                layer.bias.data.fill_(0.00)
+                layer.bias.data.fill_(0.0)
 
 
     def _get_max_val(self, activation_values, train=False, mi=False):
@@ -72,7 +72,7 @@ class Trainer:
         if val:
             acc = acc / float(len(loader.dataset))
             self.error_test.append(1-acc)
-            if epoch % 100 == 0:
+            if epoch % 1 == 0:
                 print('Validation loss: {:.7f},  Validation Acc. {:.4f}'.format(v_loss, acc))
             self.val_loss.append(v_loss)
         else:
@@ -127,7 +127,7 @@ class Trainer:
             self.error_train.append(1-acc_train)
             train_loss = train_loss / len(train_loader.dataset)
             self.train_loss.append(train_loss)
-            if epoch % 100 == 0:
+            if epoch % 1 == 0:
                 print('Epoch: {} Train loss: {:.7f},  Train Acc. {:.4f}'.format(epoch, train_loss, acc_train))
             ### STOP MAIN TRAIN LOOP ###
         
@@ -137,5 +137,5 @@ class Trainer:
             #print(float(len(train_loader.dataset)))
             ### SAVE ACTIVATION ON FULL DATA ###
             self._save_act_loader(act_loader, epoch)
-            if epoch % 100 == 0:
+            if epoch % 1 == 0:
                 print("-"*50)
