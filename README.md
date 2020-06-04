@@ -37,7 +37,7 @@ For the default parameter values see `ibbsc/default_params.py`
 
 ## Examples
 
-**Running these exampes takes roughly 15-25 hours, dependend on the example, on a decent laptop.** 
+**Running these exampes takes roughly 15-25 hours, dependent on the example, on a decent laptop.** 
 
 To generate the information plane averaged over 40 runs for a network with layer sizes `[12,10,7,5,4,3,2]` (default network) the `tanh` activation function and the mutual information estimated using:  
 
