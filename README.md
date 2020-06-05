@@ -5,6 +5,10 @@ If you have [Conda](https://docs.conda.io/en/latest/) installed on your system y
 
 `conda env create -f ibbsc.yml`
 
+You can activate the enviroment with:  
+
+`conda activate ibbsc`
+
 ## Usage 
 The section below assume that `python` is linked to the correct version (it will be inside the Conda enviroment).
 ```  
