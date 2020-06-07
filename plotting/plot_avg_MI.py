@@ -7,9 +7,9 @@ import plot_utils
 
 # Script to quickly see average mutual information 
 
-RANGE = 1
-ext = "256_30adaptive"
-data_path = "../data/saved_data_test_bias/"
+RANGE = 40
+ext = "256_100bins"
+data_path = "../data/saved_relu100/"
 # Read in all MI data from different runs
 full_MI_XH = np.zeros(RANGE,  dtype=object)
 full_MI_YH = np.zeros(RANGE,  dtype=object)
@@ -23,6 +23,6 @@ avg_MI_XH = np.mean(full_MI_XH, axis = 0)
 avg_MI_YH = np.mean(full_MI_YH, axis = 0)
 
 
-plot_utils.plot_layer_MI(avg_MI_XH[:], "$I(X;T)$")
-plot_utils.plot_layer_MI(avg_MI_YH[:], "$I(Y;T)$")
-plot_utils.plot_info_plan(avg_MI_XH[:], avg_MI_YH[:])
+plot_utils.plot_layer_MI(avg_MI_XH[:], "$I(X;T)$", save_path="xttanh_" + ext + ".png")
+plot_utils.plot_layer_MI(avg_MI_YH[:], "$I(Y;T)$", save_path="yttanh_" + ext + ".png")
+plot_utils.plot_info_plan(avg_MI_XH[:], avg_MI_YH[:], save_plot=True, save_path="tanh_" + ext + ".png")

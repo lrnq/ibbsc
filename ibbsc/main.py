@@ -70,6 +70,7 @@ def main_func(activation, data_path, save_path, batch_size, epochs, layer_sizes,
 
     for i in tqdm.tqdm(range(args.start_from, num_runs)):
         torch.manual_seed(i)
+        torch.cuda.manual_seed(i)
         np.random.seed(i)
         
         train_loader, test_loader, act_full_loader = prepare_data(data_path, test_size, i, batch_size)
