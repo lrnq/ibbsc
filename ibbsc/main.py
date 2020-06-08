@@ -1,10 +1,3 @@
-"""
-This is the main file that can generate and save the relevant data to be plotted 
-with the functions in generate_plots_thesis.py. 
-
-An example of how to run it is shown at the bottom.
-"""
-
 import sys
 from trainer import Trainer
 from mutual_inf import MI
