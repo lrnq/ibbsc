@@ -26,7 +26,7 @@ Parameters:
     -e    --epochs                      Number of epochs to train on per run.  
     -num  --num_runs                    Number of times to run the network.
     -mi   --mi_methods                  List of method(s) for estimating the mutual information.
-    -g    --try_gpu                     Try to train on a GPU. Note that CUDA seeds have not been set in main.py.
+    -g    --try_gpu                     Try to train on a GPU. 
     -nb   --num_bins                    List of number of bins to use for discretization. 
     -ls   --layer_sizes                 List of the layers sizes of the network. 
     -pr   --plot_results                Plot the information plane of the data just generated.
