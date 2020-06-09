@@ -148,6 +148,8 @@ if __name__ == "__main__":
               args.num_runs, args.try_gpu)
     if args.plot_results:
         print("Begin plotting...")
+        if not os.path.isdir("../figures"):
+            os.mkdir("../figures")
         ext = str(args.batch_size) + "_"
         exts = []
         for method in args.mi_methods:
@@ -172,7 +174,7 @@ if __name__ == "__main__":
             avg_MI_XH = np.mean(full_MI_XH, axis = 0)
             avg_MI_YH = np.mean(full_MI_YH, axis = 0)
 
-
-            plot_utils.plot_layer_MI(avg_MI_XH[:], "$I(X;T)$")
-            plot_utils.plot_layer_MI(avg_MI_YH[:], "$I(Y;T)$")
-            plot_utils.plot_info_plan(avg_MI_XH[:], avg_MI_YH[:])
+            fig_path = "../figures/"
+            plot_utils.plot_layer_MI(avg_MI_XH[:], "$I(X;T)$", save_path=fig_path + "MI_XT" + ext + ".png")
+            plot_utils.plot_layer_MI(avg_MI_YH[:], "$I(Y;T)$", save_path=fig_path + "MI_YT" + ext + ".png")
+            plot_utils.plot_info_plan(avg_MI_XH[:], avg_MI_YH[:], cbar_epochs=str(args.epochs), save_path=fig_path + "infoplane" + ext + ".png")
