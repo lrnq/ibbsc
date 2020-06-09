@@ -2,7 +2,7 @@
 This code serves as the numerical experiments for my BSc thesis in Computer Science titled Information Bottleneck for Deep Learning: Theory and Experiments.  
 
 ## Setup
-The following setup guide has been tested on **Linux Manjaro 4.8.2**.  
+The following setup guide has been tested on **Manjaro Linux 20.0.3 Lysia**.  
 If you have [Conda](https://docs.conda.io/en/latest/) installed on your system you can use the YAML file, `ibbsc.yml`, to setup an enviroment with the requirements by running:  
 
 `conda env create -f ibbsc.yml`
