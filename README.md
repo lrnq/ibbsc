@@ -49,17 +49,17 @@ To generate the information plane averaged over 40 runs for a network with layer
 1) The adaptive binning strategy:  
 ```
 cd ibbsc  
-python main.py -a=tanh -bs=256 -lr=0.0004 -sp="../data/saved_data" -num=40 -mi="[adaptive]" -nb="[30]" 
+python main.py -a=tanh -bs=256 -lr=0.0004 -sp="../data/saved_data" -num=40 -mi="[adaptive]" -nb="[30] -pr=1" 
 ```
 
 2) The adaptive binning and the fixed binning strategy:  
 ```
 cd ibbsc  
-python main.py -a=tanh -bs=256 -lr=0.0004 -sp="../data/saved_data" -num=40 -mi="[fixed,adaptive]" -nb="[30]" 
+python main.py -a=tanh -bs=256 -lr=0.0004 -sp="../data/saved_data" -num=40 -mi="[fixed,adaptive]" -nb="[30] -pr=1" 
 ```
 
 3) The adaptive binning and the fixed binning strategy for multiple number of bins:  
 ```
 cd ibbsc  
-python main.py -a=tanh -bs=256 -lr=0.0004 -sp="../data/saved_data" -num=40 -mi="[fixed,adaptive]" -nb="[30,100]" 
+python main.py -a=tanh -bs=256 -lr=0.0004 -sp="../data/saved_data" -num=40 -mi="[fixed,adaptive]" -nb="[30,100] -pr=1" 
 ```
