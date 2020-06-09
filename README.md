@@ -1,7 +1,8 @@
 # ibbsc
-This code serves as the numerical experiments for my BSc thesis in Computer Science titled Information Bottleneck for Deep Learning: Theory and Experiments. Check the Usage and Examples sections to reproduce the results. 
+This code serves as the numerical experiments for my BSc thesis in Computer Science titled Information Bottleneck for Deep Learning: Theory and Experiments.  
 
 ## Setup
+The following setup guide has been tested on Windows 10 and Linux Manjaro 4.8.2.  
 If you have [Conda](https://docs.conda.io/en/latest/) installed on your system you can use the YAML file, `ibbsc.yml`, to setup an enviroment with the requirements by running:  
 
 `conda env create -f ibbsc.yml`
