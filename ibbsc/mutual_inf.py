@@ -70,9 +70,6 @@ class MI:
             temp_MI_XH = []
             temp_MI_YH = []
             for layer_num in range(len(epoch)):
-                print(epoch[layer_num])
-                print(epoch[layer_num].shape)
-                print(np.array(epoch).shape)
                 if method == "fixed":
                     MI_XH, MI_YH = self.mutual_information(self.y_idx_label,epoch[layer_num], bins)
                 elif method == "adaptive":
