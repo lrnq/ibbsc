@@ -31,7 +31,7 @@ Parameters:
     -g    --try_gpu                     Try to train on a GPU. 
     -nb   --num_bins                    List of number of bins to use for discretization. 
     -ls   --layer_sizes                 List of the layers sizes of the network. 
-    -pr   --plot_results                Plot the information plane of the data just generated.
+    -pr   --plot_results                Generate plot of the information plane of the data just generated and save plots in --save_path .
     -sm   --save_max_vals               Save max values for each layer at each epoch.
     -ste  --save_train_error            Save training error as a function of the epochs for each run.
     -smi  --save_mutual_information     Save mutual information after each epoch.
