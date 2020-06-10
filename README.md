@@ -20,7 +20,7 @@ Usage:
   
 Parameters:  
     -h    --help                        Prints help similar to this.
-    -a    --activation                  Sets the activation function for the hidden layers, but the last.  
+    -a    --activation                  Sets the activation function for the hidden layers, but the last. Can be tanh,relu,elu or relu6. See `ibbsc/models.py` for list of supported functions as well.
     -bs   --batch_size                  Batch size for training.   
     -d    --data                        Path to the data file used for training.
     -lr   --learning_rate               Learning rate for Adam optimizer.
