@@ -1,6 +1,8 @@
 # ibbsc
 This code serves as the numerical experiments for my BSc thesis in Computer Science titled Information Bottleneck for Deep Learning: Theory and Experiments.  
-![informationplanetanh](tanh_ip.png)
+<p align="center">
+  <img width="460" height="300" src="tanh_ip.png">
+</p>
 ## Setup
 The following setup guide has been tested on **Manjaro Linux 20.0.3 Lysia**.  
 I recommend installing [Miniconda3](https://docs.conda.io/en/latest/miniconda.html) on your system so you have Conda. If you have [Conda](https://docs.conda.io/en/latest/) installed on your system you can use the YAML file, `ibbsc.yml`, to setup an enviroment with the requirements by running:  
