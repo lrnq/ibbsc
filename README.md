@@ -1,5 +1,6 @@
 # ibbsc
-This code serves as the numerical experiments for my BSc thesis in Computer Science titled Information Bottleneck for Deep Learning: Theory and Experiments.  
+This code serves as the numerical experiments for my BSc thesis in Computer Science titled:   
+Information Bottleneck for Deep Learning: Theory and Experiments.  
 <p align="center">
   <img width="550" height="400" src="tanh_ip.png">
 </p>
