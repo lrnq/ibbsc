@@ -1,5 +1,6 @@
 # ibbsc
-This is the repo for my BSc thesis in Computer Science; Information Bottleneck for Deep Learning: Theory and Experiments.  The thesis is `bsc_rvq120.pdf` and the relevant information about the code can be seen below.
+This is the repo for my BSc thesis in Computer Science; Information Bottleneck for Deep Learning: Theory and Experiments.  
+The thesis is `bsc_rvq120.pdf` and the relevant information about the code can be seen below.
 <p align="center">
   <img width="550" height="400" src="tanh_ip.png">
 </p>
