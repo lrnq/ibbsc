@@ -1,5 +1,5 @@
 # ibbsc
-This is the repo for my BSc thesis *Information Bottleneck for Deep Learning: Theory and Experiments*. The thesis can be found in `bsc_rvq120.pdf` and the relevant information about the code can be seen below. Briefly it allows you to train FNNs with various activation functions and estimate the mutual information between the hidden layers and the input and output using either an adaptive or uniform binning strategy. There are functions for plotting relevant information, such as the information plane as seen below.
+This is the repo for my BSc thesis *Information Bottleneck for Deep Learning: Theory and Experiments*. The thesis can be found in `bsc_rvq120.pdf` and the relevant information about the code can be seen below. Briefly it allows you to train FNNs with various activation functions and estimate the mutual information between the hidden layers and the input and output using either an adaptive or uniform binning strategy. There are functions for plotting relevant quantities, such as the information plane seen below.
 <p align="center">
   <img width="550" height="400" src="tanh_ip.png">
 </p>
