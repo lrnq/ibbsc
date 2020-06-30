@@ -27,25 +27,24 @@ class FNN(nn.Module):
         self.linears = nn.ModuleList([nn.Linear(*pair) for pair in in_out_pairs])
     
     def forward(self, x):
-        activations = [] #TODO: Could be nicer
+        activations = [] 
         for idx in range(self.num_layers-2):
             x = self.linears[idx](x)
             # TODO: Maybe just pass the actual function to the constructor.
             # However this also restrict it to the activation function that
             # the mutual information estimation is supported of currently.
-            if activations_functions.get(self.activation):
-                if self.activation == "linear":
+            if not activations_functions.get(self.activation):
+                raise ActivationError("Activation Function not supported...")
+            if self.activation == "linear":
                     pass
                 else:
                     x = activations_functions[self.activation](x)
-            else:
-                raise ActivationError("Activation Function not supported...")
             if not self.training: #Internal flag 
                 activations.append(x)
         x = self.linears[-1](x)
         x_softmax = F.softmax(x, dim=-1)
         if not self.training: 
-            # Cross entropy loss in pytorch adds log(softmax(x)) 
+            # Cross entropy loss in pytorch adds softmax(x) 
             activations.append(x_softmax) 
             
         return x, x_softmax, activations

@@ -4,8 +4,9 @@ import torch
 
 def truncated_normal_(tensor):
     """
-    Helper function to generate a truncated normal distribution 
-    for initializing layers.
+    Helper-function to generate a truncated normal distribution 
+    for initializing layers. Currently have a fixed mean and STD. That should
+    probably be changed so it is passed in as params (TODO).
     source: https://discuss.pytorch.org/t/implementing-truncated-normal-initializer/4778/2
     """
     mean = 0

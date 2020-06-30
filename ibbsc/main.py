@@ -17,6 +17,15 @@ import default_params
 
 
 def check_for_data(save_path):
+    """
+    Check if the data exists already, and prompt the user to confirm the path
+    to prevent overwriting already saved data.
+    Args:
+        save_path: path to save the mutual information and plots.
+
+    Returns:
+        0
+    """
     if os.path.isdir(save_path):
         resp = input("The folder to save data in already exist. Type \"yes\" to continue: ")
         if resp == "yes":
@@ -28,6 +37,18 @@ def check_for_data(save_path):
 
 
 def prepare_data(data_path, test_size, seed, batch_size):
+    """
+    Prepare the dataloaders for the training. These are also passed to the MI
+    constructor and unpacked in the MI class to compute the mutual information
+    Args:
+        data_path: path to load the dataset from.
+        test_size: percentage of data to use as test (or number of samples).
+        seed: rng seed.
+        batch_size: batch size to use.
+
+    Returns:
+        [type]: [description]
+    """
     X_train, X_test, y_train, y_test = data_utils.load_data(data_path, test_size, seed)
 
     # Prepare data for pytorch

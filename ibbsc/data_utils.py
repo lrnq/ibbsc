@@ -5,10 +5,7 @@ from torch.utils.data import DataLoader, TensorDataset
 from sklearn.model_selection import train_test_split
 
 def de_onehot(y_onehot):
-    out_arr = []
-    for i in y_onehot:
-        out_arr.append(np.argmax(i))
-    return np.array(out_arr)
+    return np.array(list(map(lambda x: np.argmax(x), y_onehot)))
 
 
 def load_data(data_path, test_size, seed):
@@ -17,13 +14,11 @@ def load_data(data_path, test_size, seed):
     X = data["F"] # (4096, 12)
     y = data["y"] # (1, 4096)
     
-    # Convert labels to one-hot enc.
     y = y.squeeze() # (4096, )
+    # Uncomment below if onehot is needed.
     #classes = len(np.unique(y))
     #y_onehot = np.eye(classes)[y]
-    
-    #test_size=819, # same os orig paper
-    #random_state=1, # not used 
+
     X_train, X_test, y_train, y_test = train_test_split(X, y,
                                                         random_state=seed,
                                                         test_size=test_size, 

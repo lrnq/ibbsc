@@ -24,7 +24,7 @@ class Trainer:
         #self.weights = dict() #  Not currently in use, but if plot of grad of weights are needed we need this
         #self.ws_grads = dict() # Not currently in use, but if plot of grad of weights are needed we need this
         
-    def _init_weights(self, layer):
+    def init_weights(self, layer):
         """
         Initialize the weights and bias for each linear layer in the model.
         """
@@ -36,9 +36,11 @@ class Trainer:
                 layer.bias.data.fill_(0.0)
 
 
-    def _get_max_val(self, activation_values, train=False, mi=False):
+    def get_max_val(self, activation_values, train=False, mi=False):
         """
-        Activation values are a list of size (num_samples, net_depth) 
+        Activation values are a list of size (num_samples, net_depth).
+        The function saves the maximum activation value observed for each 
+        layer in each epoch.
         """
         cur_epoch_max = []
         for layer in activation_values:
@@ -49,9 +51,23 @@ class Trainer:
             self.max_value_layers_mi.append(cur_epoch_max)
         return
         
-    def _get_epoch_activity(self, loader, epoch, val=False):
+    def evaluate(self, loader, epoch, val=False):
         """
-        After each epoch save the activation of each hidden layer
+        TODO: This function is poorly named.
+        If the val flag is set to true it will pass the test data through the model.
+        However no updates are made from the result so hence it should probably
+        be called a test flag and not a val flag. 
+
+        If the val flag is true the whole dataset is fed through the model. 
+
+        Args:
+            loader: Dataloader object 
+            epoch: Int with the current epoch number
+            val: flag to indicate if the test data should be passed through the model . Defaults to False.
+
+        Returns:
+            v_loss: loss over the data fed through the model
+            list(map(lambda x:x.cpu().numpy(), activations)): all activation values 
         """
         self.model.eval()
         v_loss = 0
@@ -62,7 +78,7 @@ class Trainer:
                     data, label= data.to(self.device), label.long().to(self.device)
                     yhat, yhat_softmax, activations = self.model(data)
                     v_loss += self.loss_function(yhat, label).item()
-                    acc += self._get_number_correct(yhat_softmax, label)
+                    acc += self.get_number_correct(yhat_softmax, label)
             else:
                 data, label = loader.dataset.tensors[0].to(self.device), loader.dataset.tensors[1].long().to(self.device)
                 yhat, yhat_softmax, activations = self.model(data)
@@ -80,18 +96,18 @@ class Trainer:
         return v_loss, list(map(lambda x:x.cpu().numpy(), activations))
     
     
-    def _save_act_loader(self, loader, epoch):
+    def save_act_loader(self, loader, epoch):
         """
         If we want to save the activity after each epoch for more that one dataset.
         I.e some papers save activity for both train, test and test+train. 
         Note that the order is important here. TODO: change loaders to be a dict.
         """
-        _, act = self._get_epoch_activity(loader, epoch)
+        _, act = self.get_epoch_activity(loader, epoch)
         self.hidden_activations.append(act)
-        self._get_max_val(act, mi=True)
+        self.get_max_val(act, mi=True)
 
     
-    def _get_number_correct(self, output, target):
+    def get_number_correct(self, output, target):
         """
         Returns number of correct predictions from the softmax output. 
         Requires target to be a flat vector i.e not one-hot encoded.
@@ -109,8 +125,7 @@ class Trainer:
     
     
     def train(self, train_loader, test_loader, act_loader):
-        self.model.apply(self._init_weights) #Init kernel weights
-        #scheduler = optim.lr_scheduler.ReduceLROnPlateau(self.opt, 'min', verbose=True, patience=300)
+        self.model.apply(self.init_weights) #Init kernel weights
         for epoch in range(1, self.epochs+1):
             ### START MAIN TRAIN LOOP ###
             self.model.train()
@@ -119,9 +134,8 @@ class Trainer:
             for train_data, label in train_loader: 
                 train_data, label  = train_data.to(self.device), label.long().to(self.device)
                 yhat, yhat_softmax, _ = self.model(train_data)
-                #print(yhat_softmax)
                 loss = self.loss_function(yhat, label)
-                acc_train += self._get_number_correct(yhat_softmax, label)
+                acc_train += self.get_number_correct(yhat_softmax, label)
                 self.opt.zero_grad()
                 loss.backward()
                 train_loss += loss.item()
@@ -135,10 +149,8 @@ class Trainer:
             ### STOP MAIN TRAIN LOOP ###
         
             ### RUN ON TEST DATA ###
-            self._get_epoch_activity(test_loader, epoch, val=True)[0]
-            #scheduler.step(val_loss) #Reduce LR on plateau.
-            #print(float(len(train_loader.dataset)))
+            self.get_epoch_activity(test_loader, epoch, val=True)[0]
             ### SAVE ACTIVATION ON FULL DATA ###
-            self._save_act_loader(act_loader, epoch)
+            self.save_act_loader(act_loader, epoch)
             if epoch % 100 == 0:
                 print("-"*50)
