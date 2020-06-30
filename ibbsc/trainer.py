@@ -101,7 +101,7 @@ class Trainer:
         I.e some papers save activity for both train, test and test+train. 
         Note that the order is important here. TODO: change loaders to be a dict.
         """
-        _, act = self.get_epoch_activity(loader, epoch)
+        _, act = self.evaluate(loader, epoch)
         self.hidden_activations.append(act)
         self.get_max_val(act, mi=True)
 
@@ -148,7 +148,7 @@ class Trainer:
             ### STOP MAIN TRAIN LOOP ###
         
             ### RUN ON TEST DATA ###
-            self.get_epoch_activity(test_loader, epoch, val=True)[0]
+            self.evaluate(test_loader, epoch, val=True)[0]
             ### SAVE ACTIVATION ON FULL DATA ###
             self.save_act_loader(act_loader, epoch)
             if epoch % 100 == 0:
