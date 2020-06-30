@@ -39,8 +39,7 @@ class Trainer:
     def get_max_val(self, activation_values, train=False, mi=False):
         """
         Activation values are a list of size (num_samples, net_depth).
-        The function saves the maximum activation value observed for each 
-        layer in each epoch.
+        The function saves the maximum activation values.
         """
         cur_epoch_max = []
         for layer in activation_values:

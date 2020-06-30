@@ -35,10 +35,8 @@ class FNN(nn.Module):
             # the mutual information estimation is supported of currently.
             if not activations_functions.get(self.activation):
                 raise ActivationError("Activation Function not supported...")
-            if self.activation == "linear":
-                    pass
-                else:
-                    x = activations_functions[self.activation](x)
+            if not self.activation == "linear":
+                x = activations_functions[self.activation](x)
             if not self.training: #Internal flag 
                 activations.append(x)
         x = self.linears[-1](x)
