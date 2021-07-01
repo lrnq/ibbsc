@@ -11,7 +11,7 @@ def get_min_max_vals(act, activity):
         activity: saved activation values
 
     Returns:
-        [type]: [description]
+        min_val, max_val: minimum and maximum value for the binning range based on max actication value.
     """
     if act == "tanh":
         min_val = -1
